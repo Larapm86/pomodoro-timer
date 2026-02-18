@@ -41,6 +41,71 @@ const btnAdd10 = document.getElementById('btn-add-10');
 const btnAdd15 = document.getElementById('btn-add-15');
 const btnAdjustTimer = document.getElementById('btn-adjust-timer');
 
+const THEME_STORAGE_KEY = 'pomodoro-theme';
+
+const THEME_LABELS = { default: 'Minimal theme', retro: 'Retro pixel theme', cherryverse: 'Cherryverse theme' };
+const VALID_THEMES = ['retro', 'cherryverse'];
+
+function applyTheme(theme) {
+  const valid = VALID_THEMES.includes(theme) ? theme : 'default';
+  const label = THEME_LABELS[valid] || 'Minimal theme';
+  document.body.setAttribute('data-theme', valid);
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, valid);
+  } catch (_) {}
+  const container = document.querySelector('.theme-switcher');
+  if (container) {
+    container.querySelectorAll('.theme-switcher__btn').forEach((btn) => {
+      const btnTheme = btn.getAttribute('data-theme');
+      const isSelected = btnTheme === valid;
+      const btnLabel = THEME_LABELS[btnTheme] || btnTheme;
+      btn.classList.toggle('is-selected', isSelected);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      btn.setAttribute('aria-label', isSelected ? btnLabel + ' (current)' : btnLabel);
+    });
+  }
+  const live = document.getElementById('theme-switcher-live');
+  if (live) {
+    live.textContent = 'Theme set to ' + label;
+  }
+}
+
+function initTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    applyTheme(VALID_THEMES.includes(saved) ? saved : 'default');
+  } catch (_) {
+    applyTheme('default');
+  }
+  const switcher = document.querySelector('.theme-switcher');
+  if (switcher) {
+    switcher.addEventListener('click', (e) => {
+      const btn = e.target.closest('.theme-switcher__btn');
+      if (btn && btn.getAttribute('data-theme')) {
+        applyTheme(btn.getAttribute('data-theme'));
+      }
+    });
+    switcher.addEventListener('keydown', (e) => {
+      const btns = Array.from(switcher.querySelectorAll('.theme-switcher__btn'));
+      const i = btns.indexOf(document.activeElement);
+      if (i === -1) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        btns[(i - 1 + btns.length) % btns.length].focus();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        btns[(i + 1) % btns.length].focus();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        btns[0].focus();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        btns[btns.length - 1].focus();
+      }
+    });
+  }
+}
+
 const PAUSE_SHRINK_MS = 350;
 const CIRCLES_PER_ROW = 5;
 const SHOW_START_BREAK = false; /* hide Start break for now */
@@ -530,5 +595,6 @@ if (btnAdjustTimer) {
   });
 }
 
-// Initial render
+// Theme (apply before first paint) and initial render
+initTheme();
 updateDOM();

@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
+    <nav class="theme-switcher" role="group" aria-label="Theme">
+        <span id="theme-switcher-live" class="theme-switcher__announcer" aria-live="polite" aria-atomic="true"></span>
+        <button type="button" class="theme-switcher__btn is-selected" data-theme="default" aria-pressed="true" aria-label="Minimal theme (current)">Minimal</button>
+        <button type="button" class="theme-switcher__btn" data-theme="retro" aria-pressed="false" aria-label="Retro pixel theme">Retro</button>
+        <button type="button" class="theme-switcher__btn" data-theme="cherryverse" aria-pressed="false" aria-label="Cherryverse theme">Cherryverse</button>
+    </nav>
     <div id="app" data-mode="focus">
         <div class="pomodoro">
             <div class="pomodoro__copy">

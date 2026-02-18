@@ -643,3 +643,447 @@ button.start-btn:hover {
   background-color: var(--color-btn-primary);
   color: var(--color-btn-primary-text);
 }
+
+/* ============================================
+   Theme switcher (top right)
+   ============================================ */
+
+.theme-switcher {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
+  display: flex;
+  gap: 0;
+  padding: 3px;
+  z-index: 100;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.theme-switcher__announcer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.theme-switcher__btn {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-xs) var(--space-sm);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text);
+  opacity: 0.75;
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.theme-switcher__btn:hover {
+  opacity: 1;
+}
+
+.theme-switcher__btn.is-selected,
+.theme-switcher__btn[aria-pressed="true"] {
+  background: var(--color-surface);
+  color: var(--color-text);
+  opacity: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.theme-switcher__btn:focus {
+  outline: none;
+}
+
+.theme-switcher__btn:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Retro pixel theme (Tetris-like)
+   ============================================ */
+
+body[data-theme="retro"] {
+  --font-body: "Press Start 2P", monospace;
+  --font-mono: "Press Start 2P", monospace;
+  /* Tetris palette: cyan (I), yellow (O), dark playfield */
+  --color-bg: #1a1a2e;
+  --color-surface: #252540;
+  --color-surface-elevated: #2e2e4a;
+  --color-border: #3d3d5e;
+  --color-text: #e0e0f0;
+  --color-text-muted: #9090a8;
+  --color-timer: #00f0ff;
+  --color-work-primary: #00f0ff;
+  --color-work-soft: #00c8d4;
+  --color-work-glow: rgba(0, 240, 255, 0.2);
+  --color-break-primary: #ffd700;
+  --color-break-soft: #e6c200;
+  --color-break-glow: rgba(255, 215, 0, 0.2);
+  --color-btn-primary: #00f0ff;
+  --color-btn-primary-hover: #40f8ff;
+  --color-btn-primary-text: #0a0a14;
+  --color-btn-secondary: #252540;
+  --color-btn-secondary-border: #3d3d5e;
+  --color-btn-secondary-text: #e0e0f0;
+  --color-btn-secondary-hover: #2e2e4a;
+  --color-btn-secondary-border-hover: #00f0ff;
+  --color-btn-secondary-text-hover: #e0e0f0;
+  --color-btn-tertiary-bg: #252540;
+  --color-btn-tertiary-border: #3d3d5e;
+  --color-btn-tertiary-text: #e0e0f0;
+  --color-btn-tertiary-bg-hover: #2e2e4a;
+  --color-btn-tertiary-border-hover: #00c8d4;
+  --color-btn-tertiary-text-hover: #e0e0f0;
+  --color-btn-focus-ring: #00f0ff;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-card: 0;
+  --radius-full: 0;
+  /* Focus: darker playfield */
+  --color-dark-bg: #12121e;
+  --color-dark-surface: #1a1a2a;
+  --color-dark-surface-elevated: #222234;
+  --color-dark-border: #2d2d48;
+  --color-dark-text: #e0e0f0;
+  --color-dark-text-muted: #8080a0;
+  --color-dark-btn-primary: #00f0ff;
+  --color-dark-btn-primary-hover: #40f8ff;
+  --color-dark-btn-primary-text: #0a0a14;
+  --color-dark-btn-secondary: #1a1a2a;
+  --color-dark-btn-secondary-border: #2d2d48;
+  --color-dark-btn-secondary-text: #e0e0f0;
+  --color-dark-btn-secondary-hover: #222234;
+  --color-dark-btn-secondary-border-hover: #00f0ff;
+  --color-dark-btn-tertiary-bg: #1a1a2a;
+  --color-dark-btn-tertiary-border: #2d2d48;
+  --color-dark-btn-tertiary-text: #e0e0f0;
+  --color-dark-btn-tertiary-bg-hover: #222234;
+  --color-dark-btn-tertiary-border-hover: #00c8d4;
+  --color-dark-fill-work-bottom: #00c8d4;
+  --color-dark-fill-work-mid: #00f0ff;
+  --color-dark-fill-work-top: #40f8ff;
+  --color-dark-fill-break: #ffd700;
+}
+
+/* Tetris-style grid background */
+body[data-theme="retro"] {
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+/* Retro + focus: apply dark palette */
+body[data-theme="retro"][data-mode="focus"] {
+  --color-bg: var(--color-dark-bg);
+  --color-surface: var(--color-dark-surface);
+  --color-surface-elevated: var(--color-dark-surface-elevated);
+  --color-border: var(--color-dark-border);
+  --color-text: var(--color-dark-text);
+  --color-text-muted: var(--color-dark-text-muted);
+  --color-btn-primary: var(--color-dark-btn-primary);
+  --color-btn-primary-hover: var(--color-dark-btn-primary-hover);
+  --color-btn-primary-text: var(--color-dark-btn-primary-text);
+  --color-btn-secondary: var(--color-dark-btn-secondary);
+  --color-btn-secondary-border: var(--color-dark-btn-secondary-border);
+  --color-btn-secondary-text: var(--color-dark-btn-secondary-text);
+  --color-btn-secondary-hover: var(--color-dark-btn-secondary-hover);
+  --color-btn-secondary-border-hover: var(--color-dark-btn-secondary-border-hover);
+  --color-btn-tertiary-bg: var(--color-dark-btn-tertiary-bg);
+  --color-btn-tertiary-border: var(--color-dark-btn-tertiary-border);
+  --color-btn-tertiary-text: var(--color-dark-btn-tertiary-text);
+  --color-btn-tertiary-bg-hover: var(--color-dark-btn-tertiary-bg-hover);
+  --color-btn-tertiary-border-hover: var(--color-dark-btn-tertiary-border-hover);
+}
+
+body[data-theme="retro"][data-mode="focus"] {
+  background-color: var(--color-dark-bg);
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+body[data-theme="retro"] .pomodoro {
+  box-shadow: 4px 4px 0 var(--color-border), 0 0 0 3px var(--color-border);
+  border: 2px solid var(--color-border);
+}
+
+/* Mode cue: left accent so Focus vs Break is clear without relying only on color */
+body[data-theme="retro"][data-mode="focus"] .pomodoro {
+  box-shadow: 4px 4px 0 var(--color-border), 0 0 0 2px var(--color-border), inset 4px 0 0 0 var(--color-work-primary);
+}
+
+body[data-theme="retro"][data-mode="break"] .pomodoro {
+  box-shadow: 4px 4px 0 var(--color-border), 0 0 0 2px var(--color-border), inset 4px 0 0 0 var(--color-break-primary);
+}
+
+/* Mode label: higher contrast and visible as current mode */
+body[data-theme="retro"] .pomodoro__mode {
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  margin: 0 0 var(--space-sm) 0;
+  background: var(--color-surface-elevated);
+  display: inline-block;
+  min-width: 5em;
+  text-align: center;
+}
+
+body[data-theme="retro"] .pomodoro__time,
+body[data-theme="retro"] .pomodoro__time-value {
+  font-size: 0.625rem;
+  line-height: 1.8;
+}
+
+body[data-theme="retro"] .pomodoro__btn {
+  font-size: 0.5rem;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--color-border);
+  image-rendering: pixelated;
+}
+
+body[data-theme="retro"] .pomodoro__btn:focus-visible {
+  outline: 3px solid var(--color-btn-focus-ring);
+  outline-offset: 2px;
+}
+
+body[data-theme="retro"] .pomodoro__time-value:focus-visible {
+  outline: 3px solid var(--color-btn-focus-ring);
+  outline-offset: 2px;
+}
+
+body[data-theme="retro"] .pomodoro__time-input:focus {
+  border-color: var(--color-btn-focus-ring);
+  box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.35);
+}
+
+/* Tetris-style blocks: square with subtle bevel */
+body[data-theme="retro"] .progress-circle {
+  border-radius: 0;
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.15), inset -2px -2px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px var(--color-border);
+}
+
+body[data-theme="retro"] .progress-circle__fill {
+  border-radius: 0;
+}
+
+body[data-theme="retro"] .progress-circle.filled .progress-circle__fill,
+body[data-theme="retro"] .progress-circle.filling .progress-circle__fill {
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="retro"] .theme-switcher {
+  border-radius: 0;
+  padding: 2px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+body[data-theme="retro"] .theme-switcher__btn {
+  border-radius: 0;
+  font-size: 0.5rem;
+}
+
+body[data-theme="retro"] .theme-switcher__btn.is-selected,
+body[data-theme="retro"] .theme-switcher__btn[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2px var(--color-border);
+}
+
+/* Retro: improved hover states */
+body[data-theme="retro"] .pomodoro__btn:hover {
+  opacity: 1;
+}
+
+body[data-theme="retro"] #btn-start-pause.start-btn:hover,
+body[data-theme="retro"] .start-btn:hover {
+  background-color: var(--color-btn-primary-hover);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="retro"] .pomodoro__btn--secondary:hover {
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-secondary-border-hover);
+}
+
+body[data-theme="retro"] #btn-reset:hover {
+  background-color: var(--color-btn-tertiary-bg-hover);
+  border-color: var(--color-btn-tertiary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-tertiary-border-hover);
+}
+
+body[data-theme="retro"] .pomodoro__time-value:hover {
+  color: var(--color-work-primary);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+body[data-theme="retro"] .theme-switcher__btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================
+   Cherryverse theme
+   ============================================ */
+
+body[data-theme="cherryverse"] {
+  --font-body: "VT323", monospace;
+  --font-mono: "VT323", monospace;
+  /* Base (break mode): slightly lighter green tint */
+  --color-bg: #0a0e0a;
+  --color-surface: #0d140d;
+  --color-surface-elevated: #121c12;
+  --color-border: #1a2e1a;
+  --color-text: #00ff41;
+  --color-text-muted: #008f30;
+  --color-timer: #00ff41;
+  --color-work-primary: #00ff41;
+  --color-work-soft: #00cc34;
+  --color-work-glow: rgba(0, 255, 65, 0.15);
+  --color-break-primary: #00dd88;
+  --color-break-soft: #00bb70;
+  --color-break-glow: rgba(0, 221, 136, 0.15);
+  --color-btn-primary: #00ff41;
+  --color-btn-primary-hover: #33ff66;
+  --color-btn-primary-text: #0a0e0a;
+  --color-btn-secondary: #0d140d;
+  --color-btn-secondary-border: #1a2e1a;
+  --color-btn-secondary-text: #00ff41;
+  --color-btn-secondary-hover: #121c12;
+  --color-btn-secondary-border-hover: #00ff41;
+  --color-btn-secondary-text-hover: #00ff41;
+  --color-btn-tertiary-bg: #0d140d;
+  --color-btn-tertiary-border: #1a2e1a;
+  --color-btn-tertiary-text: #00ff41;
+  --color-btn-tertiary-bg-hover: #121c12;
+  --color-btn-tertiary-border-hover: #00cc34;
+  --color-btn-tertiary-text-hover: #00ff41;
+  --color-btn-focus-ring: #00ff41;
+  /* Dark mode (focus): near-black */
+  --color-dark-bg: #020302;
+  --color-dark-surface: #050805;
+  --color-dark-surface-elevated: #080d08;
+  --color-dark-border: #0f1a0f;
+  --color-dark-text: #00ff41;
+  --color-dark-text-muted: #006b24;
+  --color-dark-btn-primary: #00ff41;
+  --color-dark-btn-primary-hover: #33ff66;
+  --color-dark-btn-primary-text: #020302;
+  --color-dark-btn-secondary: #050805;
+  --color-dark-btn-secondary-border: #0f1a0f;
+  --color-dark-btn-secondary-text: #00ff41;
+  --color-dark-btn-secondary-hover: #080d08;
+  --color-dark-btn-secondary-border-hover: #00ff41;
+  --color-dark-btn-tertiary-bg: #050805;
+  --color-dark-btn-tertiary-border: #0f1a0f;
+  --color-dark-btn-tertiary-text: #00ff41;
+  --color-dark-btn-tertiary-bg-hover: #080d08;
+  --color-dark-btn-tertiary-border-hover: #00cc34;
+  --color-dark-fill-work-bottom: #00cc34;
+  --color-dark-fill-work-mid: #00ff41;
+  --color-dark-fill-work-top: #33ff66;
+  --color-dark-fill-break: #00dd88;
+}
+
+body[data-theme="cherryverse"] {
+  background-color: #0a0e0a;
+}
+
+/* Cherryverse + focus: dark mode – near-black */
+body[data-theme="cherryverse"][data-mode="focus"] {
+  background-color: #020302;
+  --color-bg: #020302;
+  --color-surface: var(--color-dark-surface);
+  --color-surface-elevated: var(--color-dark-surface-elevated);
+  --color-border: var(--color-dark-border);
+  --color-text: var(--color-dark-text);
+  --color-text-muted: var(--color-dark-text-muted);
+  --color-btn-primary: var(--color-dark-btn-primary);
+  --color-btn-primary-hover: var(--color-dark-btn-primary-hover);
+  --color-btn-primary-text: var(--color-dark-btn-primary-text);
+  --color-btn-secondary: var(--color-dark-btn-secondary);
+  --color-btn-secondary-border: var(--color-dark-btn-secondary-border);
+  --color-btn-secondary-text: var(--color-dark-btn-secondary-text);
+  --color-btn-secondary-hover: var(--color-dark-btn-secondary-hover);
+  --color-btn-secondary-border-hover: var(--color-dark-btn-secondary-border-hover);
+  --color-btn-tertiary-bg: var(--color-dark-btn-tertiary-bg);
+  --color-btn-tertiary-border: var(--color-dark-btn-tertiary-border);
+  --color-btn-tertiary-text: var(--color-dark-btn-tertiary-text);
+  --color-btn-tertiary-bg-hover: var(--color-dark-btn-tertiary-bg-hover);
+  --color-btn-tertiary-border-hover: var(--color-dark-btn-tertiary-border-hover);
+}
+
+/* Subtle scanline overlay (behind content) */
+body[data-theme="cherryverse"]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+body[data-theme="cherryverse"] #app {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-theme="cherryverse"] .pomodoro {
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.08), 0 0 40px rgba(0, 255, 65, 0.04);
+}
+
+/* Cherryverse: improved hover states */
+body[data-theme="cherryverse"] .pomodoro__btn:hover {
+  opacity: 1;
+}
+
+body[data-theme="cherryverse"] #btn-start-pause.start-btn:hover,
+body[data-theme="cherryverse"] .start-btn:hover {
+  background-color: var(--color-btn-primary-hover);
+  box-shadow: 0 0 14px rgba(0, 255, 65, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="cherryverse"] .pomodoro__btn--secondary:hover {
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-secondary-border-hover), inset 0 0 12px rgba(0, 255, 65, 0.08);
+}
+
+body[data-theme="cherryverse"] #btn-reset:hover {
+  background-color: var(--color-btn-tertiary-bg-hover);
+  border-color: var(--color-btn-tertiary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-tertiary-border-hover);
+}
+
+body[data-theme="cherryverse"] .pomodoro__time-value:hover {
+  color: var(--color-btn-primary);
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.6);
+}
+
+body[data-theme="cherryverse"] .theme-switcher__btn:hover {
+  opacity: 1;
+  background: rgba(0, 255, 65, 0.08);
+  color: var(--color-text);
+}
