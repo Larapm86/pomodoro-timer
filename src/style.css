@@ -3,34 +3,79 @@
    ============================================ */
 
 :root {
-  /* ----- Colors (dark theme) ----- */
-  /* Base / neutral */
-  --color-bg: #0f0f0f;
-  --color-surface: #1a1a1a;
-  --color-surface-elevated: #252525;
-  --color-border: #2e2e2e;
-  --color-text: #f0f0f0;
-  --color-text-muted: #8a8a8a;
+  /* ----- Colors (teal card theme – bedtime-reminder style) ----- */
+  /* Base */
+  --color-bg: #3d5458;
+  --color-surface: #4b676c;
+  --color-surface-elevated: #5a757a;
+  --color-border: #5a757a;
+  --color-text: #e0e0e0;
+  --color-text-muted: #bfbfbf;
+  --color-timer: rgba(224, 224, 224, 0.95);
 
-  /* Work mode (focus) – purple, accessible on dark */
-  --color-work-primary: #a78bfa;
-  --color-work-soft: #8b5cf6;
-  --color-work-glow: rgba(167, 139, 250, 0.25);
+  /* Work mode (focus) – soft teal accent */
+  --color-work-primary: #7c9aa1;
+  --color-work-soft: #6b8a91;
+  --color-work-glow: rgba(124, 154, 161, 0.2);
 
-  /* Break mode (rest) – calm, cool */
-  --color-break-primary: #2db88a;
-  --color-break-soft: #259972;
-  --color-break-glow: rgba(45, 184, 138, 0.25);
+  /* Break mode (rest) – warmer teal */
+  --color-break-primary: #6b9b8a;
+  --color-break-soft: #5a8a79;
+  --color-break-glow: rgba(107, 155, 138, 0.2);
 
-  /* Mode shorthand (for data-mode styling) */
+  /* Mode shorthand */
   --color-work: var(--color-work-primary);
   --color-break: var(--color-break-primary);
 
+  /* Button hierarchy – clear order + accessible contrast */
+  --color-btn-primary: #7c9aa1;
+  --color-btn-primary-hover: #8aa8af;
+  --color-btn-primary-text: #0f0f0f;
+  --color-btn-secondary: #4b676c;
+  --color-btn-secondary-border: #6b8a91;
+  --color-btn-secondary-text: #ffffff;
+  --color-btn-secondary-hover: #5a757a;
+  --color-btn-secondary-border-hover: #7c9aa1;
+  --color-btn-secondary-text-hover: #ffffff;
+  --color-btn-tertiary-bg: #3d5256;
+  --color-btn-tertiary-border: #5a757a;
+  --color-btn-tertiary-text: #ffffff;
+  --color-btn-tertiary-bg-hover: #4b676c;
+  --color-btn-tertiary-border-hover: #6b8a91;
+  --color-btn-tertiary-text-hover: #ffffff;
+  --color-btn-focus-ring: #ffffff;
+
   /* Semantic */
   --color-accent: var(--color-work-primary);
-  --color-success: #2db88a;
-  --color-warning: #e5a83c;
-  --color-error: #a78bfa;
+  --color-success: #6b9b8a;
+  --color-warning: #c9a86c;
+  --color-error: #a67c7c;
+
+  /* ----- Dark mode palette (focus) ----- */
+  --color-dark-bg: #1a2224;
+  --color-dark-surface: #232d30;
+  --color-dark-surface-elevated: #2d383c;
+  --color-dark-border: #3d4a4e;
+  --color-dark-text: #e8eaeb;
+  --color-dark-text-muted: #9ca3a5;
+  --color-dark-btn-primary: #5a7a80;
+  --color-dark-btn-primary-hover: #6b8a91;
+  --color-dark-btn-primary-text: #e8eaeb;
+  --color-dark-btn-secondary: #2d383c;
+  --color-dark-btn-secondary-border: #3d4a4e;
+  --color-dark-btn-secondary-text: #e8eaeb;
+  --color-dark-btn-secondary-hover: #3d4a4e;
+  --color-dark-btn-secondary-border-hover: #5a7a80;
+  --color-dark-btn-tertiary-bg: #232d30;
+  --color-dark-btn-tertiary-border: #3d4a4e;
+  --color-dark-btn-tertiary-text: #e8eaeb;
+  --color-dark-btn-tertiary-bg-hover: #2d383c;
+  --color-dark-btn-tertiary-border-hover: #3d4a4e;
+  /* Circle fill (vibrant, high contrast on dark) */
+  --color-dark-fill-work-bottom: #6b9a9e;
+  --color-dark-fill-work-mid: #8ab8be;
+  --color-dark-fill-work-top: #a8d4da;
+  --color-dark-fill-break: #7ab89a;
 
   /* ----- Spacing scale (xs → xl) ----- */
   --space-xs: 0.25rem;   /* 4px */
@@ -62,12 +107,39 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.625;
 
-  /* ----- Border radius ----- */
-  --radius-sm: 0.25rem;   /* 4px */
-  --radius-md: 0.5rem;   /* 8px */
-  --radius-lg: 0.75rem;  /* 12px */
-  --radius-xl: 1rem;     /* 16px */
+  /* ----- Border radius (soft, card-like) ----- */
+  --radius-sm: 0.375rem;  /* 6px */
+  --radius-md: 0.625rem; /* 10px */
+  --radius-lg: 1rem;     /* 16px */
+  --radius-xl: 1.25rem;  /* 20px */
+  --radius-card: 1.5rem; /* 24px – main card */
   --radius-full: 9999px;
+
+  /* Timer display width (MM:SS at timer font size) – used for controls row */
+  --width-timer-display: 13.5rem;
+}
+
+/* Focus mode: use dark palette from :root */
+body[data-mode="focus"] {
+  --color-bg: var(--color-dark-bg);
+  --color-surface: var(--color-dark-surface);
+  --color-surface-elevated: var(--color-dark-surface-elevated);
+  --color-border: var(--color-dark-border);
+  --color-text: var(--color-dark-text);
+  --color-text-muted: var(--color-dark-text-muted);
+  --color-btn-primary: var(--color-dark-btn-primary);
+  --color-btn-primary-hover: var(--color-dark-btn-primary-hover);
+  --color-btn-primary-text: var(--color-dark-btn-primary-text);
+  --color-btn-secondary: var(--color-dark-btn-secondary);
+  --color-btn-secondary-border: var(--color-dark-btn-secondary-border);
+  --color-btn-secondary-text: var(--color-dark-btn-secondary-text);
+  --color-btn-secondary-hover: var(--color-dark-btn-secondary-hover);
+  --color-btn-secondary-border-hover: var(--color-dark-btn-secondary-border-hover);
+  --color-btn-tertiary-bg: var(--color-dark-btn-tertiary-bg);
+  --color-btn-tertiary-border: var(--color-dark-btn-tertiary-border);
+  --color-btn-tertiary-text: var(--color-dark-btn-tertiary-text);
+  --color-btn-tertiary-bg-hover: var(--color-dark-btn-tertiary-bg-hover);
+  --color-btn-tertiary-border-hover: var(--color-dark-btn-tertiary-border-hover);
 }
 
 /* ============================================
@@ -85,12 +157,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.4s ease, color 0.3s ease;
+}
+
+body[data-mode="focus"][data-last-minute="true"] {
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-break-glow) 100%);
+}
+
+body[data-mode="break"][data-last-minute="true"] {
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-work-glow) 100%);
+}
+
+body.timer-zero-flash {
+  animation: timer-zero-flash 0.6s ease-out;
+}
+
+@keyframes timer-zero-flash {
+  0% { filter: brightness(1); }
+  15% { filter: brightness(1.35); }
+  40% { filter: brightness(1.15); }
+  100% { filter: brightness(1); }
 }
 
 #app {
   width: 100%;
   max-width: 24rem;
-  padding: var(--space-xl);
+  padding: var(--space-lg) var(--space-xl);
 }
 
 /* ============================================
@@ -101,83 +193,453 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xl);
-  padding: var(--space-2xl) var(--space-lg);
+  gap: 0;
+  padding: var(--space-xl) var(--space-lg) var(--space-xs);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border: none;
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+/* Spacing between sections when progress is visible */
+.pomodoro__adjust:not(.is-hidden),
+.pomodoro__progress:not(.is-hidden) {
+  margin-top: var(--space-lg);
+}
+
+.pomodoro__progress:not(.is-hidden) + .pomodoro__controls {
+  margin-top: var(--space-lg);
+}
+
+/* Copy block: header + main message, centered – stays at top */
+.pomodoro__copy {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: var(--width-timer-display);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .pomodoro__mode {
-  margin: 0;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--space-sm) 0;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-normal);
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  text-align: center;
 }
 
 .pomodoro__time {
-  font-family: var(--font-mono);
-  font-size: var(--text-timer);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
+  font-family: var(--font-body);
+  font-size: 1.25rem; /* 20px */
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
   color: var(--color-text);
   min-height: 1.25em;
+  width: 100%;
+  margin: 0;
+  text-align: center;
 }
 
-/* Timer always white */
+.pomodoro__time-value {
+  font-family: var(--font-mono);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.pomodoro__time-value:hover {
+  opacity: 0.9;
+}
+
+.pomodoro__time-value:focus {
+  outline: none;
+}
+
+.pomodoro__time-value:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.pomodoro__time-input {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  font-weight: inherit;
+  color: var(--color-text);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.15em 0.35em;
+  width: 4.5em;
+  text-align: center;
+}
+
+.pomodoro__time-input:focus {
+  outline: none;
+  border-color: var(--color-work-primary);
+}
+
 .pomodoro__time,
 .time-display {
   color: var(--color-text);
 }
 
-.pomodoro__controls {
+/* Timer view: +5 / +10 / +15 and Set timer */
+.pomodoro__adjust {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  width: 100%;
+  max-width: var(--width-timer-display);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pomodoro__adjust.is-hidden {
+  display: none;
+}
+
+.pomodoro__adjust-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-md);
   width: 100%;
+}
+
+.pomodoro__adjust-row .pomodoro__btn {
+  flex: 1;
+  min-width: 0;
+}
+
+.pomodoro__adjust-row:last-child .pomodoro__btn {
+  width: 100%;
+}
+
+/* Progress: one circle per minute, 5 per row. Smooth fill over 60s; lightning when complete. */
+@property --progress-fill {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.pomodoro__progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-md);
+  width: 100%;
+  max-width: var(--width-timer-display);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.pomodoro__progress.is-hidden {
+  display: none;
+}
+
+.progress-circle {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 2.25rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--color-surface-elevated);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fill grows from bottom to top; clip reveals bottom portion */
+.progress-circle__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  clip-path: inset(calc((1 - var(--progress-fill, 0)) * 100%) 0 0 0);
+  transition: --progress-fill 1s linear;
+  background: linear-gradient(
+    to top,
+    var(--progress-fill-color, var(--color-work-primary)) 0%,
+    var(--progress-fill-color, var(--color-work-primary)) 100%
+  );
+}
+
+/* Focus: soft teal gradient (bottom to top) */
+#app[data-mode="focus"] .progress-circle__fill {
+  background: linear-gradient(to top, #5a757a 0%, #7c9aa1 50%, #8aa8af 100%);
+}
+
+/* Dark mode: vibrant fill, high contrast */
+body[data-mode="focus"] .progress-circle__fill {
+  background: linear-gradient(
+    to top,
+    var(--color-dark-fill-work-bottom) 0%,
+    var(--color-dark-fill-work-mid) 50%,
+    var(--color-dark-fill-work-top) 100%
+  );
+  filter: brightness(1.15);
+}
+
+.progress-circle.filled .progress-circle__fill {
+  --progress-fill: 1;
+  clip-path: inset(0 0 0 0);
+  transition: none;
+}
+
+#app[data-mode="focus"] .progress-circle.filled .progress-circle__fill {
+  background: linear-gradient(to top, #5a757a 0%, #7c9aa1 50%, #8aa8af 100%);
+}
+
+body[data-mode="focus"] .progress-circle.filled .progress-circle__fill {
+  background: linear-gradient(
+    to top,
+    var(--color-dark-fill-work-bottom) 0%,
+    var(--color-dark-fill-work-mid) 50%,
+    var(--color-dark-fill-work-top) 100%
+  );
+  filter: brightness(1.15);
+}
+
+#app[data-mode="break"] .progress-circle.filled .progress-circle__fill {
+  background: var(--progress-fill-color, var(--color-break-primary));
+}
+
+body[data-mode="focus"] #app[data-mode="break"] .progress-circle__fill,
+body[data-mode="focus"] #app[data-mode="break"] .progress-circle.filled .progress-circle__fill {
+  background: var(--color-dark-fill-break);
+}
+
+/* Work = purple gradient, break = green */
+#app[data-mode="focus"] .pomodoro__progress {
+  --progress-fill-color: var(--color-work-primary);
+}
+#app[data-mode="break"] .pomodoro__progress {
+  --progress-fill-color: var(--color-break-primary);
+}
+
+/* Lightning: subtle flash when circle completes */
+.progress-circle.just-filled {
+  animation: lightning-pulse 0.5s ease-out forwards;
+}
+
+@keyframes lightning-pulse {
+  0% { box-shadow: 0 0 0 0 var(--progress-fill-color); filter: brightness(1.2); }
+  40% { box-shadow: 0 0 12px 3px var(--progress-fill-color); filter: brightness(1.4); }
+  100% { box-shadow: none; filter: brightness(1); }
+}
+
+/* CTAs: fixed spacing above, 8px between Start and Switch, no extra space below */
+.pomodoro__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: var(--width-timer-display);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--space-lg);
+  padding-top: 0;
+  box-sizing: border-box;
+  transition: opacity 0.4s ease-out;
+}
+
+/* Row: Start/Pause + Reset (when visible) */
+.pomodoro__controls-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   justify-content: center;
+  gap: var(--space-md);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* When only Start/Pause: button is full width */
+.pomodoro__controls-row:not(.has-reset) #btn-start-pause {
+  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* When Reset visible: Pause and Reset equal width */
+.pomodoro__controls-row.has-reset #btn-start-pause,
+.pomodoro__controls-row.has-reset #btn-reset {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.pomodoro__controls-row.is-hidden {
+  display: none;
+}
+
+.pomodoro__controls-row--switch #btn-switch-mode {
+  width: 100%;
+  min-width: 0;
+}
+
+.pomodoro__controls-row--switch.intro-complete--switch {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: intro-switch-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes intro-switch-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pomodoro__controls.is-hidden {
+  display: none !important;
+}
+
+.pomodoro__controls.intro-reserving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Secondary row: Start break now */
+.pomodoro__controls-secondary {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, max-height 0.35s ease;
+}
+
+.pomodoro__controls-secondary.visible {
+  display: flex;
+  max-height: 4rem;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pomodoro__controls-secondary #btn-start-break-now {
+  width: 100%;
+  min-width: 0;
 }
 
 .pomodoro__btn {
   font-family: var(--font-body);
   font-size: var(--text-base);
   font-weight: var(--font-weight-medium);
+  min-height: 2.75rem;
+  min-width: 2.75rem;
   padding: var(--space-sm) var(--space-lg);
-  border: none;
-  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
 }
 
 .pomodoro__btn:hover {
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .pomodoro__btn:active {
   transform: scale(0.98);
 }
 
+.pomodoro__btn:focus {
+  outline: none;
+}
+
+.pomodoro__btn:focus-visible {
+  outline: 3px solid var(--color-btn-focus-ring);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
 #btn-start-pause.start-btn,
 #app .start-btn,
 button.start-btn {
-  background-color: #a78bfa;
-  color: var(--color-bg);
+  background-color: var(--color-btn-primary);
+  color: var(--color-btn-primary-text);
+  border-color: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+#btn-start-pause.start-btn:hover,
+#app .start-btn:hover,
+button.start-btn:hover {
+  background-color: var(--color-btn-primary-hover);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  opacity: 1;
 }
 
 .pomodoro__btn--secondary {
-  background-color: var(--color-surface-elevated);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
 }
 
 .pomodoro__btn--secondary:hover {
-  color: var(--color-text);
-  border-color: var(--color-text-muted);
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  color: var(--color-btn-secondary-text-hover);
 }
 
-/* Start button purple – ensure it wins (ID-only rule) */
+#btn-start-break,
+#btn-start-break-now {
+  text-align: center;
+  justify-content: center;
+}
+
+#btn-reset {
+  background-color: var(--color-btn-tertiary-bg);
+  border: 2px solid var(--color-btn-tertiary-border);
+  color: var(--color-btn-tertiary-text);
+  text-align: center;
+  justify-content: center;
+}
+
+#btn-reset.is-hidden {
+  display: none;
+}
+
+#btn-reset:hover {
+  background-color: var(--color-btn-tertiary-bg-hover);
+  border-color: var(--color-btn-tertiary-border-hover);
+  color: var(--color-btn-tertiary-text-hover);
+}
+
+.pomodoro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  width: 100%;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.pomodoro__actions.actions-visible {
+  opacity: 1;
+}
+
 #btn-start-pause {
-  background-color: #a78bfa;
-  color: #0f0f0f;
+  background-color: var(--color-btn-primary);
+  color: var(--color-btn-primary-text);
+  font-weight: var(--font-weight-medium);
+}
+
+#btn-start-pause.is-running {
+  background-color: var(--color-btn-primary);
+  color: var(--color-btn-primary-text);
 }
