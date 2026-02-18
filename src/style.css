@@ -12,10 +12,10 @@
   --color-text: #f0f0f0;
   --color-text-muted: #8a8a8a;
 
-  /* Work mode (focus) – warm, alert */
-  --color-work-primary: #e54d3c;
-  --color-work-soft: #c43d2e;
-  --color-work-glow: rgba(229, 77, 60, 0.25);
+  /* Work mode (focus) – purple, accessible on dark */
+  --color-work-primary: #a78bfa;
+  --color-work-soft: #8b5cf6;
+  --color-work-glow: rgba(167, 139, 250, 0.25);
 
   /* Break mode (rest) – calm, cool */
   --color-break-primary: #2db88a;
@@ -30,7 +30,7 @@
   --color-accent: var(--color-work-primary);
   --color-success: #2db88a;
   --color-warning: #e5a83c;
-  --color-error: #e54d3c;
+  --color-error: #a78bfa;
 
   /* ----- Spacing scale (xs → xl) ----- */
   --space-xs: 0.25rem;   /* 4px */
@@ -126,12 +126,10 @@ body {
   min-height: 1.25em;
 }
 
-#app[data-mode="work"] .time-display {
-  color: var(--color-work);
-}
-
-#app[data-mode="break"] .time-display {
-  color: var(--color-break);
+/* Timer always white */
+.pomodoro__time,
+.time-display {
+  color: var(--color-text);
 }
 
 .pomodoro__controls {
@@ -160,8 +158,10 @@ body {
   transform: scale(0.98);
 }
 
-.pomodoro__btn--primary {
-  background-color: var(--color-accent);
+#btn-start-pause.start-btn,
+#app .start-btn,
+button.start-btn {
+  background-color: #a78bfa;
   color: var(--color-bg);
 }
 
@@ -174,4 +174,10 @@ body {
 .pomodoro__btn--secondary:hover {
   color: var(--color-text);
   border-color: var(--color-text-muted);
+}
+
+/* Start button purple – ensure it wins (ID-only rule) */
+#btn-start-pause {
+  background-color: #a78bfa;
+  color: #0f0f0f;
 }
