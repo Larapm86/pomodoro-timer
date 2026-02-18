@@ -995,10 +995,11 @@ body[data-theme="cherryverse"] {
   --color-dark-btn-tertiary-text: #00ff41;
   --color-dark-btn-tertiary-bg-hover: #080d08;
   --color-dark-btn-tertiary-border-hover: #00cc34;
-  --color-dark-fill-work-bottom: #00cc34;
-  --color-dark-fill-work-mid: #00ff41;
-  --color-dark-fill-work-top: #33ff66;
-  --color-dark-fill-break: #00dd88;
+  /* Circle fill: same as light mode */
+  --color-dark-fill-work-bottom: var(--color-work-soft);
+  --color-dark-fill-work-mid: var(--color-work-primary);
+  --color-dark-fill-work-top: var(--color-btn-primary-hover);
+  --color-dark-fill-break: var(--color-break-primary);
 }
 
 body[data-theme="cherryverse"] {
