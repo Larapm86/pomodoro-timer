@@ -1,5 +1,9 @@
 /* ============================================
-   CSS Custom Properties – Pomodoro Timer
+   Pomodoro Timer – Styles
+   ============================================
+   Sections: Custom properties (:root, focus mode) · Base & layout · Pomodoro components
+   · Controls & buttons · Progress circles · Theme: Default (Minimal) · Retro · Cherryverse
+   · Cherry (warm, CTA hierarchy: primary / secondary / tertiary)
    ============================================ */
 
 :root {
@@ -252,11 +256,25 @@ body.timer-zero-flash {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 0.15em;
-  transition: color 0.4s ease;
+  padding: 0.15em 0.35em;
+  margin: -0.15em -0.35em;
+  border-radius: var(--radius-sm);
+  transition: color 0.25s ease, background-color 0.25s ease, opacity 0.25s ease;
 }
 
 .pomodoro__time-value:hover {
   opacity: 0.9;
+}
+
+/* Minimal: timer hover – visible background + color so hover is obvious */
+body[data-theme="default"] .pomodoro__time-value:hover {
+  color: var(--color-work-primary);
+  background-color: rgba(124, 154, 161, 0.22);
+  opacity: 1;
+}
+
+body[data-theme="default"] #app[data-mode="focus"] .pomodoro__time-value:hover {
+  background-color: rgba(124, 154, 161, 0.28);
 }
 
 .pomodoro__time-value:focus {
@@ -607,7 +625,7 @@ button.start-btn:hover {
   color: var(--color-btn-secondary-text-hover);
 }
 
-/* CTA hierarchy (default, retro, cherryverse): Reset = secondary; tertiary = ghost (transparent default, fill on hover). See per-theme blocks below. */
+/* CTA hierarchy (Minimal, Cherry, Cherryverse, Retro): Reset = secondary; tertiary = ghost (transparent default, fill on hover). See per-theme blocks below. */
 
 /* Default (Minimal): secondary = Reset, Switch (when not tertiary); tertiary = ghost */
 body[data-theme="default"] #btn-reset {
@@ -1226,8 +1244,14 @@ body[data-theme="cherryverse"] #app[data-mode="focus"] #btn-switch-mode.is-terti
 }
 
 body[data-theme="cherryverse"] .pomodoro__time-value:hover {
-  color: var(--color-btn-primary);
-  text-shadow: 0 0 10px rgba(0, 255, 65, 0.6);
+  color: var(--color-btn-primary-hover);
+  background-color: rgba(0, 255, 65, 0.18);
+  text-shadow: 0 0 12px rgba(0, 255, 65, 0.7);
+  opacity: 1;
+}
+
+body[data-theme="cherryverse"] #app[data-mode="focus"] .pomodoro__time-value:hover {
+  background-color: rgba(0, 255, 65, 0.22);
 }
 
 body[data-theme="cherryverse"] .theme-switcher__btn:hover {
@@ -1274,7 +1298,7 @@ body[data-theme="cherry"] {
   --color-btn-primary: #c73e2a;
   --color-btn-primary-hover: #d64532;
   --color-btn-primary-text: #fff;
-  /* Secondary = tone-down: soft fill (accessible) or unfilled – break uses soft tomato fill */
+  /* Secondary = tone-down: soft red fill (accessible) */
   --color-btn-secondary: #e8c4bf;
   --color-btn-secondary-border: #d4a099;
   --color-btn-secondary-text: #2c2420;
@@ -1298,7 +1322,7 @@ body[data-theme="cherry"] {
   --color-dark-btn-primary: #c73e2a;
   --color-dark-btn-primary-hover: #d64532;
   --color-dark-btn-primary-text: #fff;
-  /* Secondary = tone-down: soft tomato fill (accessible on dark) */
+  /* Secondary = tone-down: soft red fill (accessible on dark) */
   --color-dark-btn-secondary: rgba(199, 62, 42, 0.22);
   --color-dark-btn-secondary-border: rgba(199, 62, 42, 0.45);
   --color-dark-btn-secondary-text: #f5efe8;
@@ -1388,7 +1412,7 @@ body[data-theme="cherry"] .pomodoro__btn--secondary:focus-visible {
   outline-offset: 2px;
 }
 
-/* Tomato theme: Reset = same style as Switch to focus/break (secondary soft tomato fill) */
+/* Cherry theme: Reset = same style as Switch to focus/break (secondary soft fill) */
 body[data-theme="cherry"] #btn-reset {
   background-color: var(--color-btn-secondary);
   border: 2px solid var(--color-btn-secondary-border);
@@ -1407,14 +1431,14 @@ body[data-theme="cherry"] #btn-reset:focus-visible {
   border-color: transparent;
 }
 
-/* Cherry focus mode: Reset hover – keep light text for contrast on tomato hover */
+/* Cherry focus mode: Reset hover – keep light text for contrast */
 body[data-theme="cherry"] #app[data-mode="focus"] #btn-reset:hover {
   background-color: rgba(199, 62, 42, 0.5);
   color: #f5efe8;
   box-shadow: 0 2px 6px rgba(199, 62, 42, 0.25);
 }
 
-/* Tomato theme: tertiary = Start break now / Start focus now (also #btn-switch-mode when .is-tertiary-label). Default: no outline, no fill. Hover only: filled. */
+/* Cherry theme: tertiary = Start break now / Start focus now (also #btn-switch-mode when .is-tertiary-label). Default: no outline, no fill. Hover only: filled. */
 body[data-theme="cherry"] #btn-start-break-now,
 body[data-theme="cherry"] #btn-switch-mode.is-tertiary-label {
   background: transparent;
@@ -1454,7 +1478,7 @@ body[data-theme="cherry"] .pomodoro__progress {
   background: transparent;
 }
 
-/* Cherry theme: circle concept – circle fills with tomato red over the minute, then green leaf when full */
+/* Cherry theme: circle fills with red over the minute, then green leaf when full */
 body[data-theme="cherry"] .progress-circle__stem,
 body[data-theme="cherry"] .progress-circle__leaf,
 body[data-theme="cherry"] .progress-circle__tomato {

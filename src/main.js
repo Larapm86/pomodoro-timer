@@ -44,9 +44,9 @@ const btnAdd15 = document.getElementById('btn-add-15');
 const btnAdjustTimer = document.getElementById('btn-adjust-timer');
 
 const THEME_STORAGE_KEY = 'pomodoro-theme';
-
-const THEME_LABELS = { default: 'Minimal theme', retro: 'Retro pixel theme', cherryverse: 'Cherryverse theme', cherry: 'Cherry theme' };
-const VALID_THEMES = ['retro', 'cherryverse', 'cherry'];
+/** Theme IDs and labels; order in VALID_THEMES matches theme switcher UI (Minimal, Cherry, Cherryverse, Retro). */
+const THEME_LABELS = { default: 'Minimal theme', cherry: 'Cherry theme', cherryverse: 'Cherryverse theme', retro: 'Retro pixel theme' };
+const VALID_THEMES = ['cherry', 'cherryverse', 'retro'];
 
 function updateThemeSwitcherIndicator() {
   const container = document.querySelector('.theme-switcher');
