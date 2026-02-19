@@ -157,7 +157,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.4s ease, color 0.3s ease;
+  transition: background-color 0.45s ease, background 0.45s ease, color 0.4s ease;
 }
 
 body[data-mode="focus"][data-last-minute="true"] {
@@ -200,6 +200,7 @@ body.timer-zero-flash {
   border-radius: var(--radius-card);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
+  transition: background-color 0.45s ease, box-shadow 0.45s ease;
 }
 
 /* Spacing between sections when progress is visible */
@@ -230,6 +231,7 @@ body.timer-zero-flash {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   text-align: center;
+  transition: color 0.4s ease;
 }
 
 .pomodoro__time {
@@ -242,6 +244,7 @@ body.timer-zero-flash {
   width: 100%;
   margin: 0;
   text-align: center;
+  transition: color 0.4s ease;
 }
 
 .pomodoro__time-value {
@@ -249,6 +252,7 @@ body.timer-zero-flash {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 0.15em;
+  transition: color 0.4s ease;
 }
 
 .pomodoro__time-value:hover {
@@ -365,6 +369,13 @@ body.timer-zero-flash {
     var(--progress-fill-color, var(--color-work-primary)) 0%,
     var(--progress-fill-color, var(--color-work-primary)) 100%
   );
+}
+
+/* Cherry theme plant parts: hidden in other themes so fill shows as normal */
+body:not([data-theme="cherry"]) .progress-circle__stem,
+body:not([data-theme="cherry"]) .progress-circle__leaf,
+body:not([data-theme="cherry"]) .progress-circle__tomato {
+  display: none !important;
 }
 
 /* Focus: soft teal gradient (bottom to top) */
@@ -539,7 +550,7 @@ body[data-mode="focus"] #app[data-mode="break"] .progress-circle.filled .progres
   border: 2px solid transparent;
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease, opacity 0.15s ease, transform 0.1s ease;
   text-align: center;
   display: inline-flex;
   align-items: center;
@@ -582,17 +593,67 @@ button.start-btn:hover {
   opacity: 1;
 }
 
-.pomodoro__btn--secondary {
+/* Exclude tertiary (#btn-start-break-now, #btn-switch-mode when .is-tertiary-label) – styled separately */
+.pomodoro__btn--secondary:not(#btn-start-break-now):not(#btn-switch-mode.is-tertiary-label) {
   font-weight: var(--font-weight-medium);
   background-color: var(--color-btn-secondary);
   border: 2px solid var(--color-btn-secondary-border);
   color: var(--color-btn-secondary-text);
 }
 
-.pomodoro__btn--secondary:hover {
+.pomodoro__btn--secondary:not(#btn-start-break-now):not(#btn-switch-mode.is-tertiary-label):hover {
   background-color: var(--color-btn-secondary-hover);
   border-color: var(--color-btn-secondary-border-hover);
   color: var(--color-btn-secondary-text-hover);
+}
+
+/* CTA hierarchy (default, retro, cherryverse): Reset = secondary; tertiary = ghost (transparent default, fill on hover). See per-theme blocks below. */
+
+/* Default (Minimal): secondary = Reset, Switch (when not tertiary); tertiary = ghost */
+body[data-theme="default"] #btn-reset {
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
+}
+
+body[data-theme="default"] #btn-reset:hover {
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  color: var(--color-btn-secondary-text-hover);
+}
+
+/* Minimal: Switch to focus/break on initial screen – muted text so distinct from Start */
+body[data-theme="default"] #btn-switch-mode:not(.is-tertiary-label) {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+body[data-theme="default"] #btn-switch-mode:not(.is-tertiary-label):hover {
+  color: #ffffff;
+}
+
+body[data-theme="default"] #btn-start-break-now,
+body[data-theme="default"] #btn-switch-mode.is-tertiary-label {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--color-text-muted);
+}
+
+body[data-theme="default"] #btn-start-break-now:hover,
+body[data-theme="default"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(124, 154, 161, 0.18);
+  border-color: transparent;
+  color: var(--color-text);
+}
+
+body[data-theme="default"] #app[data-mode="focus"] #btn-start-break-now,
+body[data-theme="default"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label {
+  color: var(--color-dark-text-muted);
+}
+
+body[data-theme="default"] #app[data-mode="focus"] #btn-start-break-now:hover,
+body[data-theme="default"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(45, 56, 60, 0.5);
+  color: var(--color-dark-text);
 }
 
 #btn-start-break,
@@ -673,10 +734,28 @@ button.start-btn:hover {
   border: 0;
 }
 
+.theme-switcher__indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.45s cubic-bezier(0.34, 1.2, 0.64, 1), width 0.45s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+/* Fixed typography and width so indicator doesn’t jump when theme (and typeface) changes */
 .theme-switcher__btn {
-  font-family: var(--font-body);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-medium);
+  position: relative;
+  z-index: 1;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  min-width: 4.5rem;
   padding: var(--space-xs) var(--space-sm);
   border: none;
   border-radius: var(--radius-full);
@@ -684,7 +763,7 @@ button.start-btn:hover {
   background: transparent;
   color: var(--color-text);
   opacity: 0.75;
-  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transition: color 0.25s ease, opacity 0.2s ease;
 }
 
 .theme-switcher__btn:hover {
@@ -693,10 +772,8 @@ button.start-btn:hover {
 
 .theme-switcher__btn.is-selected,
 .theme-switcher__btn[aria-pressed="true"] {
-  background: var(--color-surface);
   color: var(--color-text);
   opacity: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .theme-switcher__btn:focus {
@@ -891,18 +968,24 @@ body[data-theme="retro"] .progress-circle.filling .progress-circle__fill {
 
 body[data-theme="retro"] .theme-switcher {
   border-radius: 0;
-  padding: 2px;
+  padding: 3px;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+body[data-theme="retro"] .theme-switcher__indicator {
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  border-radius: 0;
 }
 
 body[data-theme="retro"] .theme-switcher__btn {
   border-radius: 0;
-  font-size: 0.5rem;
 }
 
 body[data-theme="retro"] .theme-switcher__btn.is-selected,
 body[data-theme="retro"] .theme-switcher__btn[aria-pressed="true"] {
-  box-shadow: inset 0 0 0 2px var(--color-border);
+  box-shadow: none;
 }
 
 /* Retro: improved hover states */
@@ -923,9 +1006,41 @@ body[data-theme="retro"] .pomodoro__btn--secondary:hover {
 }
 
 body[data-theme="retro"] #btn-reset:hover {
-  background-color: var(--color-btn-tertiary-bg-hover);
-  border-color: var(--color-btn-tertiary-border-hover);
-  box-shadow: 0 0 0 1px var(--color-btn-tertiary-border-hover);
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-secondary-border-hover);
+}
+
+/* Retro: Reset = secondary; tertiary = ghost */
+body[data-theme="retro"] #btn-reset {
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
+}
+
+body[data-theme="retro"] #btn-start-break-now,
+body[data-theme="retro"] #btn-switch-mode.is-tertiary-label {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--color-text-muted);
+}
+
+body[data-theme="retro"] #btn-start-break-now:hover,
+body[data-theme="retro"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: transparent;
+  color: var(--color-text);
+}
+
+body[data-theme="retro"] #app[data-mode="focus"] #btn-start-break-now,
+body[data-theme="retro"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label {
+  color: var(--color-dark-text-muted);
+}
+
+body[data-theme="retro"] #app[data-mode="focus"] #btn-start-break-now:hover,
+body[data-theme="retro"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--color-dark-text);
 }
 
 body[data-theme="retro"] .pomodoro__time-value:hover {
@@ -1073,9 +1188,41 @@ body[data-theme="cherryverse"] .pomodoro__btn--secondary:hover {
 }
 
 body[data-theme="cherryverse"] #btn-reset:hover {
-  background-color: var(--color-btn-tertiary-bg-hover);
-  border-color: var(--color-btn-tertiary-border-hover);
-  box-shadow: 0 0 0 1px var(--color-btn-tertiary-border-hover);
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  box-shadow: 0 0 0 1px var(--color-btn-secondary-border-hover), inset 0 0 12px rgba(0, 255, 65, 0.08);
+}
+
+/* Cherryverse: Reset = secondary; tertiary = ghost */
+body[data-theme="cherryverse"] #btn-reset {
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
+}
+
+body[data-theme="cherryverse"] #btn-start-break-now,
+body[data-theme="cherryverse"] #btn-switch-mode.is-tertiary-label {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--color-text-muted);
+}
+
+body[data-theme="cherryverse"] #btn-start-break-now:hover,
+body[data-theme="cherryverse"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(0, 255, 65, 0.12);
+  border-color: transparent;
+  color: var(--color-text);
+}
+
+body[data-theme="cherryverse"] #app[data-mode="focus"] #btn-start-break-now,
+body[data-theme="cherryverse"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label {
+  color: var(--color-dark-text-muted);
+}
+
+body[data-theme="cherryverse"] #app[data-mode="focus"] #btn-start-break-now:hover,
+body[data-theme="cherryverse"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(0, 255, 65, 0.18);
+  color: var(--color-dark-text);
 }
 
 body[data-theme="cherryverse"] .pomodoro__time-value:hover {
@@ -1087,4 +1234,301 @@ body[data-theme="cherryverse"] .theme-switcher__btn:hover {
   opacity: 1;
   background: rgba(0, 255, 65, 0.08);
   color: var(--color-text);
+}
+
+/* Cherryverse: circle design in both focus and break – soft outline, green fill, 85% opacity */
+body[data-theme="cherryverse"] .progress-circle {
+  background: rgba(0, 255, 65, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(0, 255, 65, 0.18);
+  opacity: 0.85;
+}
+
+body[data-theme="cherryverse"] .progress-circle__fill,
+body[data-theme="cherryverse"] .progress-circle.filled .progress-circle__fill {
+  background: linear-gradient(to top, #00aa2a 0%, #00ff41 45%, #44ff70 100%);
+  filter: brightness(1.2);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+}
+
+/* ============================================
+   Cherry theme – warm & fun
+   ============================================ */
+
+body[data-theme="cherry"] {
+  --font-body: "Nunito", system-ui, sans-serif;
+  --font-mono: "Nunito", system-ui, sans-serif;
+  /* Base (break): warm cream */
+  --color-bg: #faf6f2;
+  --color-surface: #f0e9e2;
+  --color-surface-elevated: #e8dfd6;
+  --color-border: #d4c4b0;
+  --color-text: #2c2420;
+  --color-text-muted: #6b5d54;
+  --color-timer: #2c2420;
+  --color-work-primary: #c73e2a;
+  --color-work-soft: #a63524;
+  --color-work-glow: rgba(199, 62, 42, 0.2);
+  --color-break-primary: #2d6b3e;
+  --color-break-soft: #245a32;
+  --color-break-glow: rgba(45, 107, 62, 0.2);
+  --color-btn-primary: #c73e2a;
+  --color-btn-primary-hover: #d64532;
+  --color-btn-primary-text: #fff;
+  /* Secondary = tone-down: soft fill (accessible) or unfilled – break uses soft tomato fill */
+  --color-btn-secondary: #e8c4bf;
+  --color-btn-secondary-border: #d4a099;
+  --color-btn-secondary-text: #2c2420;
+  --color-btn-secondary-hover: #e0b5af;
+  --color-btn-secondary-border-hover: #c73e2a;
+  --color-btn-secondary-text-hover: #2c2420;
+  --color-btn-tertiary-bg: #e8dfd6;
+  --color-btn-tertiary-border: #d4c4b0;
+  --color-btn-tertiary-text: #2c2420;
+  --color-btn-tertiary-bg-hover: #dfd4ca;
+  --color-btn-tertiary-border-hover: #c4b09a;
+  --color-btn-tertiary-text-hover: #2c2420;
+  --color-btn-focus-ring: #c73e2a;
+  /* Dark (focus): warm brown */
+  --color-dark-bg: #2a221e;
+  --color-dark-surface: #352d28;
+  --color-dark-surface-elevated: #403830;
+  --color-dark-border: #5c4e44;
+  --color-dark-text: #f5efe8;
+  --color-dark-text-muted: #a8988a;
+  --color-dark-btn-primary: #c73e2a;
+  --color-dark-btn-primary-hover: #d64532;
+  --color-dark-btn-primary-text: #fff;
+  /* Secondary = tone-down: soft tomato fill (accessible on dark) */
+  --color-dark-btn-secondary: rgba(199, 62, 42, 0.22);
+  --color-dark-btn-secondary-border: rgba(199, 62, 42, 0.45);
+  --color-dark-btn-secondary-text: #f5efe8;
+  --color-dark-btn-secondary-hover: rgba(199, 62, 42, 0.35);
+  --color-dark-btn-secondary-border-hover: #c73e2a;
+  --color-dark-btn-secondary-text-hover: #f5efe8;
+  --color-dark-btn-tertiary-bg: #352d28;
+  --color-dark-btn-tertiary-border: #5c4e44;
+  --color-dark-btn-tertiary-text: #f5efe8;
+  --color-dark-btn-tertiary-bg-hover: #403830;
+  --color-dark-btn-tertiary-border-hover: #5c4e44;
+  --color-dark-fill-work-bottom: #a63524;
+  --color-dark-fill-work-mid: #c73e2a;
+  --color-dark-fill-work-top: #d64532;
+  --color-dark-fill-break: #2d6b3e;
+}
+
+body[data-theme="cherry"] {
+  background-color: #faf6f2;
+}
+
+body[data-theme="cherry"][data-mode="focus"] {
+  background-color: #2a221e;
+  --color-bg: #2a221e;
+  --color-surface: var(--color-dark-surface);
+  --color-surface-elevated: var(--color-dark-surface-elevated);
+  --color-border: var(--color-dark-border);
+  --color-text: var(--color-dark-text);
+  --color-text-muted: var(--color-dark-text-muted);
+  --color-timer: var(--color-dark-text);
+  --color-btn-primary: var(--color-dark-btn-primary);
+  --color-btn-primary-hover: var(--color-dark-btn-primary-hover);
+  --color-btn-primary-text: var(--color-dark-btn-primary-text);
+  --color-btn-secondary: var(--color-dark-btn-secondary);
+  --color-btn-secondary-border: var(--color-dark-btn-secondary-border);
+  --color-btn-secondary-text: var(--color-dark-btn-secondary-text);
+  --color-btn-secondary-hover: var(--color-dark-btn-secondary-hover);
+  --color-btn-secondary-border-hover: var(--color-dark-btn-secondary-border-hover);
+  --color-btn-secondary-text-hover: var(--color-dark-btn-secondary-text-hover);
+  --color-btn-tertiary-bg: var(--color-dark-btn-tertiary-bg);
+  --color-btn-tertiary-border: var(--color-dark-btn-tertiary-border);
+  --color-btn-tertiary-text: var(--color-dark-btn-tertiary-text);
+  --color-btn-tertiary-bg-hover: var(--color-dark-btn-tertiary-bg-hover);
+  --color-btn-tertiary-border-hover: var(--color-dark-btn-tertiary-border-hover);
+}
+
+body[data-theme="cherry"] .pomodoro {
+  box-shadow: 0 4px 20px rgba(44, 36, 32, 0.08), 0 0 0 1px rgba(212, 196, 176, 0.5);
+}
+
+body[data-theme="cherry"][data-mode="focus"] .pomodoro {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--color-border);
+}
+
+body[data-theme="cherry"] .pomodoro__time-value:hover {
+  color: var(--color-work-primary);
+}
+
+body[data-theme="cherry"] .theme-switcher__btn:hover {
+  opacity: 1;
+  background: rgba(199, 62, 42, 0.1);
+  color: var(--color-text);
+}
+
+/* CTA hierarchy:
+   - Main: Start btn, Pause btn (#btn-start-pause)
+   - Secondary: Switch to focus, Switch to break (#btn-switch-mode), Reset (#btn-reset)
+   - Tertiary: Start break now, Start focus now (#btn-start-break-now) */
+
+/* Cherry theme: secondary = tone-down (soft fill). Exclude tertiary: #btn-start-break-now and #btn-switch-mode when showing "Start … now" (.is-tertiary-label). */
+body[data-theme="cherry"] .pomodoro__btn--secondary:not(#btn-start-break-now):not(#btn-switch-mode.is-tertiary-label) {
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+body[data-theme="cherry"] .pomodoro__btn--secondary:not(#btn-start-break-now):not(#btn-switch-mode.is-tertiary-label):hover {
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  color: var(--color-btn-secondary-text-hover);
+  box-shadow: 0 2px 4px rgba(199, 62, 42, 0.15);
+}
+
+body[data-theme="cherry"] .pomodoro__btn--secondary:focus-visible {
+  outline: 2px solid var(--color-btn-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Tomato theme: Reset = same style as Switch to focus/break (secondary soft tomato fill) */
+body[data-theme="cherry"] #btn-reset {
+  background-color: var(--color-btn-secondary);
+  border: 2px solid var(--color-btn-secondary-border);
+  color: var(--color-btn-secondary-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+body[data-theme="cherry"] #btn-reset:hover {
+  background-color: var(--color-btn-secondary-hover);
+  border-color: var(--color-btn-secondary-border-hover);
+  color: var(--color-btn-secondary-text-hover);
+  box-shadow: 0 2px 4px rgba(199, 62, 42, 0.15);
+}
+
+body[data-theme="cherry"] #btn-reset:focus-visible {
+  border-color: transparent;
+}
+
+/* Cherry focus mode: Reset hover – keep light text for contrast on tomato hover */
+body[data-theme="cherry"] #app[data-mode="focus"] #btn-reset:hover {
+  background-color: rgba(199, 62, 42, 0.5);
+  color: #f5efe8;
+  box-shadow: 0 2px 6px rgba(199, 62, 42, 0.25);
+}
+
+/* Tomato theme: tertiary = Start break now / Start focus now (also #btn-switch-mode when .is-tertiary-label). Default: no outline, no fill. Hover only: filled. */
+body[data-theme="cherry"] #btn-start-break-now,
+body[data-theme="cherry"] #btn-switch-mode.is-tertiary-label {
+  background: transparent;
+  border: 2px solid transparent;
+  color: #363432;
+  text-decoration: none;
+  box-shadow: none;
+}
+
+body[data-theme="cherry"] #app[data-mode="focus"] #btn-start-break-now,
+body[data-theme="cherry"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label {
+  background: transparent;
+  border: 2px solid transparent;
+  color: #c4a89e;
+}
+
+body[data-theme="cherry"] #btn-start-break-now:hover,
+body[data-theme="cherry"] #btn-switch-mode.is-tertiary-label:hover {
+  background: #f0e9e0;
+  border-color: transparent;
+}
+
+body[data-theme="cherry"] #app[data-mode="focus"] #btn-start-break-now:hover,
+body[data-theme="cherry"] #app[data-mode="focus"] #btn-switch-mode.is-tertiary-label:hover {
+  background: rgba(199, 62, 42, 0.22);
+  border-color: transparent;
+}
+
+body[data-theme="cherry"] #btn-start-break-now:focus-visible,
+body[data-theme="cherry"] #btn-switch-mode.is-tertiary-label:focus-visible {
+  outline: 2px solid var(--color-btn-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Cherry theme: no green/surface background on progress container or cells */
+body[data-theme="cherry"] .pomodoro__progress {
+  background: transparent;
+}
+
+/* Cherry theme: circle concept – circle fills with tomato red over the minute, then green leaf when full */
+body[data-theme="cherry"] .progress-circle__stem,
+body[data-theme="cherry"] .progress-circle__leaf,
+body[data-theme="cherry"] .progress-circle__tomato {
+  display: none !important;
+}
+
+/* Circle: round, no outline. Unfilled = subtle but visible (focus vs break). */
+body[data-theme="cherry"] .progress-circle {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  overflow: visible;
+  border: none;
+  box-sizing: border-box;
+  transition: background 0.45s ease, box-shadow 0.45s ease;
+}
+
+/* Unfilled circle: same outline as card (focus = dark border, break = warm border) */
+body[data-theme="cherry"] #app[data-mode="focus"] .progress-circle {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+body[data-theme="cherry"] #app[data-mode="break"] .progress-circle {
+  background: rgba(199, 62, 42, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(212, 196, 176, 0.5);
+}
+
+body[data-theme="cherry"] .progress-circle::before {
+  display: none;
+}
+
+/* Fill: cherry red (theme), grows from bottom over the minute – focus and break */
+body[data-theme="cherry"] .progress-circle__fill,
+body[data-theme="cherry"] #app[data-mode="focus"] .progress-circle__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  clip-path: inset(calc((1 - var(--progress-fill, 0)) * 100%) 0 0 0);
+  transition: clip-path 0.15s linear, --progress-fill 0.15s linear;
+  background: linear-gradient(to top, #b54a3d 0%, #c73e2a 45%, #d95a47 100%);
+  pointer-events: none;
+}
+
+/* Filled = cherry red in both focus and break */
+body[data-theme="cherry"] .progress-circle.filled .progress-circle__fill,
+body[data-theme="cherry"] #app[data-mode="focus"] .progress-circle.filled .progress-circle__fill,
+body[data-theme="cherry"] #app[data-mode="break"] .progress-circle.filled .progress-circle__fill {
+  clip-path: none;
+  background: linear-gradient(145deg, #d95a47 0%, #c73e2a 50%, #a63524 100%);
+}
+
+/* When full: green leaf on top (on circle so it’s always visible) */
+body[data-theme="cherry"] .progress-circle.filled::after {
+  content: '';
+  position: absolute;
+  top: -12%;
+  left: 50%;
+  width: 40%;
+  height: 32%;
+  margin-left: -20%;
+  background: linear-gradient(180deg, #2d6b3e 0%, #3d7a4a 50%, #4a8a58 100%);
+  border-radius: 50% 50% 45% 0;
+  transform: rotate(-12deg);
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+body[data-theme="cherry"] .progress-circle.just-filled::after {
+  animation: tomato-leaf-pop 0.4s ease-out forwards;
+}
+
+@keyframes tomato-leaf-pop {
+  0% { transform: rotate(-15deg) scale(0.8); opacity: 0.7; }
+  50% { transform: rotate(-15deg) scale(1.08); opacity: 1; }
+  100% { transform: rotate(-15deg) scale(1); opacity: 1; }
 }

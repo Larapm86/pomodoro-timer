@@ -16,6 +16,8 @@ const state = {
 };
 
 let intervalId = null;
+let progressIntervalId = null;
+let lastTickTimestamp = 0;
 let add5RevealTimeout = null;
 let breakIntroAnimationId = null;
 let focusIntroAnimationId = null;
@@ -43,8 +45,20 @@ const btnAdjustTimer = document.getElementById('btn-adjust-timer');
 
 const THEME_STORAGE_KEY = 'pomodoro-theme';
 
-const THEME_LABELS = { default: 'Minimal theme', retro: 'Retro pixel theme', cherryverse: 'Cherryverse theme' };
-const VALID_THEMES = ['retro', 'cherryverse'];
+const THEME_LABELS = { default: 'Minimal theme', retro: 'Retro pixel theme', cherryverse: 'Cherryverse theme', cherry: 'Cherry theme' };
+const VALID_THEMES = ['retro', 'cherryverse', 'cherry'];
+
+function updateThemeSwitcherIndicator() {
+  const container = document.querySelector('.theme-switcher');
+  const indicator = container?.querySelector('.theme-switcher__indicator');
+  const selected = container?.querySelector('.theme-switcher__btn.is-selected');
+  if (!indicator || !selected || !container) return;
+  const paddingLeft = parseFloat(getComputedStyle(container).paddingLeft) || 0;
+  const left = selected.offsetLeft - paddingLeft;
+  const width = selected.offsetWidth;
+  indicator.style.width = width + 'px';
+  indicator.style.transform = 'translateX(' + left + 'px)';
+}
 
 function applyTheme(theme) {
   const valid = VALID_THEMES.includes(theme) ? theme : 'default';
@@ -63,11 +77,12 @@ function applyTheme(theme) {
       btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
       btn.setAttribute('aria-label', isSelected ? btnLabel + ' (current)' : btnLabel);
     });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(updateThemeSwitcherIndicator);
+    });
   }
   const live = document.getElementById('theme-switcher-live');
-  if (live) {
-    live.textContent = 'Theme set to ' + label;
-  }
+  if (live) live.textContent = 'Theme set to ' + label;
 }
 
 function initTheme() {
@@ -77,6 +92,7 @@ function initTheme() {
   } catch (_) {
     applyTheme('default');
   }
+  requestAnimationFrame(updateThemeSwitcherIndicator);
   const switcher = document.querySelector('.theme-switcher');
   if (switcher) {
     switcher.addEventListener('click', (e) => {
@@ -180,6 +196,10 @@ function enterTimeEditMode() {
       clearInterval(intervalId);
       intervalId = null;
     }
+    if (progressIntervalId) {
+      clearInterval(progressIntervalId);
+      progressIntervalId = null;
+    }
     if (add5RevealTimeout) {
       clearTimeout(add5RevealTimeout);
       add5RevealTimeout = null;
@@ -200,7 +220,9 @@ function enterTimeEditMode() {
   function resumeIfWasRunning() {
     if (wasRunningBeforeEdit) {
       state.isRunning = true;
+      lastTickTimestamp = Date.now();
       intervalId = setInterval(tick, 1000);
+      progressIntervalId = setInterval(updateProgressCircles, 80);
       if (state.currentMode === 'focus' && SHOW_START_BREAK) scheduleAdd5Reveal();
       updateDOM();
     }
@@ -250,7 +272,13 @@ function updateProgressCircles() {
       const wrap = document.createElement('div');
       wrap.className = 'progress-circle';
       wrap.setAttribute('aria-hidden', 'true');
-      wrap.innerHTML = '<span class="progress-circle__fill"></span>';
+      wrap.innerHTML = '<span class="progress-circle__fill">' +
+        '<span class="progress-circle__stem" aria-hidden="true"></span>' +
+        '<span class="progress-circle__leaf progress-circle__leaf--1" aria-hidden="true"></span>' +
+        '<span class="progress-circle__leaf progress-circle__leaf--2" aria-hidden="true"></span>' +
+        '<span class="progress-circle__leaf progress-circle__leaf--3" aria-hidden="true"></span>' +
+        '<span class="progress-circle__tomato" aria-hidden="true"></span>' +
+        '</span>';
       progressContainer.appendChild(wrap);
     }
     circles = progressContainer.querySelectorAll('.progress-circle');
@@ -261,10 +289,12 @@ function updateProgressCircles() {
 
   circles.forEach((circle, i) => {
     const fillEl = circle.querySelector('.progress-circle__fill');
+    if (!fillEl) return;
     circle.classList.remove('filled', 'filling', 'just-filled');
     fillEl.style.animation = '';
     fillEl.style.animationDelay = '';
     fillEl.style.removeProperty('--progress-fill');
+    circle.style.removeProperty('--progress-fill');
 
     if (i < minutesElapsed) {
       circle.classList.add('filled');
@@ -272,11 +302,17 @@ function updateProgressCircles() {
         circle.classList.add('just-filled');
         setTimeout(() => circle.classList.remove('just-filled'), 500);
       }
+      fillEl.style.setProperty('--progress-fill', '1');
+      circle.style.setProperty('--progress-fill', '1');
     } else if (i === minutesElapsed) {
       circle.classList.add('filling');
       const secondsSoFarInMinute = (totalSeconds - state.timeRemaining) % 60;
-      const fillRatio = Math.min(secondsSoFarInMinute / 60, 59 / 60);
+      const fractionOfSecond = state.isRunning && lastTickTimestamp
+        ? Math.min((Date.now() - lastTickTimestamp) / 1000, 0.999)
+        : 0;
+      const fillRatio = Math.min((secondsSoFarInMinute + fractionOfSecond) / 60, 59.99 / 60);
       fillEl.style.setProperty('--progress-fill', String(fillRatio));
+      circle.style.setProperty('--progress-fill', String(fillRatio));
     }
   });
 
@@ -363,9 +399,11 @@ function updateDOM() {
     if (introMode) {
       btnSwitchMode.textContent = state.currentMode === 'focus' ? 'Switch to break' : 'Switch to focus';
       btnSwitchMode.setAttribute('aria-label', state.currentMode === 'focus' ? 'Switch to break' : 'Switch to focus');
+      btnSwitchMode.classList.remove('is-tertiary-label');
     } else {
       btnSwitchMode.textContent = state.currentMode === 'focus' ? 'Start break now' : 'Start focus now';
       btnSwitchMode.setAttribute('aria-label', state.currentMode === 'focus' ? 'Start break now' : 'Start focus now');
+      btnSwitchMode.classList.add('is-tertiary-label');
     }
   }
   if (controlsSwitchRow) {
@@ -385,6 +423,7 @@ function updateDOM() {
 }
 
 function tick() {
+  lastTickTimestamp = Date.now();
   state.timeRemaining -= 1;
   if (state.timeRemaining <= 0) {
     if (state.currentMode === 'focus' && state.skipNextBreak) {
@@ -410,11 +449,17 @@ function startPause() {
   if (state.isRunning) {
     state.hasStartedInCurrentMode = true;
     state.sessionDurationSeconds = state.timeRemaining;
+    lastTickTimestamp = Date.now();
     intervalId = setInterval(tick, 1000);
+    progressIntervalId = setInterval(updateProgressCircles, 80);
     if (state.currentMode === 'focus' && SHOW_START_BREAK) scheduleAdd5Reveal();
   } else {
     clearInterval(intervalId);
     intervalId = null;
+    if (progressIntervalId) {
+      clearInterval(progressIntervalId);
+      progressIntervalId = null;
+    }
     if (add5RevealTimeout) {
       clearTimeout(add5RevealTimeout);
       add5RevealTimeout = null;
@@ -430,6 +475,10 @@ function reset() {
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;
+  }
+  if (progressIntervalId) {
+    clearInterval(progressIntervalId);
+    progressIntervalId = null;
   }
   if (add5RevealTimeout) {
     clearTimeout(add5RevealTimeout);
@@ -597,4 +646,5 @@ if (btnAdjustTimer) {
 
 // Theme (apply before first paint) and initial render
 initTheme();
+requestAnimationFrame(updateThemeSwitcherIndicator);
 updateDOM();
