@@ -1,18 +1,42 @@
 // Pomodoro Timer
 import './style.css';
 
-const WORK_DURATION = 25 * 60;   // 25 minutes in seconds
-const BREAK_DURATION = 5 * 60;  // 5 minutes in seconds
+const DEFAULT_WORK_MIN = 25;
+const DEFAULT_BREAK_MIN = 5;
+const STORAGE_FOCUS_MIN_KEY = 'pomodoro-default-focus-min';
+const STORAGE_BREAK_MIN_KEY = 'pomodoro-default-break-min';
+/** Focus presets: 15 (Quick Boost), 25 (Pomodoro), 40 (Deep Dive), 55 (Power Session). */
+const FOCUS_PRESET_MINS = [15, 25, 40, 55];
+/** Break presets: 5 (short), 10 (relaxed), 15 (long). */
+const BREAK_PRESET_MINS = [5, 10, 15];
+
+function getWorkDurationSeconds() {
+  try {
+    const m = parseInt(localStorage.getItem(STORAGE_FOCUS_MIN_KEY), 10);
+    return (Number.isFinite(m) && m >= 1 && m <= 99) ? m * 60 : DEFAULT_WORK_MIN * 60;
+  } catch (_) {
+    return DEFAULT_WORK_MIN * 60;
+  }
+}
+
+function getBreakDurationSeconds() {
+  try {
+    const m = parseInt(localStorage.getItem(STORAGE_BREAK_MIN_KEY), 10);
+    return (Number.isFinite(m) && m >= 1 && m <= 99) ? m * 60 : DEFAULT_BREAK_MIN * 60;
+  } catch (_) {
+    return DEFAULT_BREAK_MIN * 60;
+  }
+}
 
 const state = {
-  timeRemaining: WORK_DURATION,
+  timeRemaining: DEFAULT_WORK_MIN * 60,
   isRunning: false,
   currentMode: 'focus', // 'focus' | 'break'
   skipNextBreak: false,
   hasRevealedActions: false,
-  lastMinutesElapsed: -1, // for progress circle "just filled" lightning
-  hasStartedInCurrentMode: false, // true after Start in this mode, false when switching mode
-  sessionDurationSeconds: WORK_DURATION, // used for progress circle count (minutes = circles)
+  lastMinutesElapsed: -1,
+  hasStartedInCurrentMode: false,
+  sessionDurationSeconds: DEFAULT_WORK_MIN * 60,
 };
 
 let intervalId = null;
@@ -44,9 +68,25 @@ const btnAdd15 = document.getElementById('btn-add-15');
 const btnAdjustTimer = document.getElementById('btn-adjust-timer');
 
 const THEME_STORAGE_KEY = 'pomodoro-theme';
+const SOUND_STORAGE_KEY = 'pomodoro-sound-on';
 /** Theme IDs and labels; order in VALID_THEMES matches theme switcher UI (Minimal, Cherry, Cherryverse, Retro). */
 const THEME_LABELS = { default: 'Minimal theme', cherry: 'Cherry theme', cherryverse: 'Cherryverse theme', retro: 'Retro pixel theme' };
 const VALID_THEMES = ['cherry', 'cherryverse', 'retro'];
+
+function getSoundEnabled() {
+  try {
+    const v = localStorage.getItem(SOUND_STORAGE_KEY);
+    return v !== 'false';
+  } catch (_) {
+    return true;
+  }
+}
+
+function setSoundEnabled(on) {
+  try {
+    localStorage.setItem(SOUND_STORAGE_KEY, on ? 'true' : 'false');
+  } catch (_) {}
+}
 
 function updateThemeSwitcherIndicator() {
   const container = document.querySelector('.theme-switcher');
@@ -67,16 +107,19 @@ function applyTheme(theme) {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, valid);
   } catch (_) {}
-  const container = document.querySelector('.theme-switcher');
-  if (container) {
-    container.querySelectorAll('.theme-switcher__btn').forEach((btn) => {
-      const btnTheme = btn.getAttribute('data-theme');
-      const isSelected = btnTheme === valid;
-      const btnLabel = THEME_LABELS[btnTheme] || btnTheme;
-      btn.classList.toggle('is-selected', isSelected);
-      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
-      btn.setAttribute('aria-label', isSelected ? btnLabel + ' (current)' : btnLabel);
+  const cardsContainer = document.querySelector('.settings__theme-cards');
+  if (cardsContainer) {
+    cardsContainer.querySelectorAll('.settings__theme-card').forEach((card) => {
+      const cardTheme = card.getAttribute('data-theme');
+      const isSelected = cardTheme === valid;
+      const cardLabel = THEME_LABELS[cardTheme] || cardTheme;
+      card.classList.toggle('is-selected', isSelected);
+      card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      card.setAttribute('aria-label', isSelected ? cardLabel + ' (current)' : cardLabel);
     });
+  }
+  const oldSwitcher = document.querySelector('.theme-switcher');
+  if (oldSwitcher) {
     requestAnimationFrame(() => {
       requestAnimationFrame(updateThemeSwitcherIndicator);
     });
@@ -93,33 +136,221 @@ function initTheme() {
     applyTheme('default');
   }
   requestAnimationFrame(updateThemeSwitcherIndicator);
-  const switcher = document.querySelector('.theme-switcher');
-  if (switcher) {
-    switcher.addEventListener('click', (e) => {
-      const btn = e.target.closest('.theme-switcher__btn');
-      if (btn && btn.getAttribute('data-theme')) {
-        applyTheme(btn.getAttribute('data-theme'));
+  const cardsContainer = document.querySelector('.settings__theme-cards');
+  if (cardsContainer) {
+    cardsContainer.addEventListener('click', (e) => {
+      const card = e.target.closest('.settings__theme-card');
+      if (card && card.getAttribute('data-theme')) {
+        applyTheme(card.getAttribute('data-theme'));
       }
     });
-    switcher.addEventListener('keydown', (e) => {
-      const btns = Array.from(switcher.querySelectorAll('.theme-switcher__btn'));
-      const i = btns.indexOf(document.activeElement);
+    cardsContainer.addEventListener('keydown', (e) => {
+      const cards = Array.from(cardsContainer.querySelectorAll('.settings__theme-card'));
+      const i = cards.indexOf(document.activeElement);
       if (i === -1) return;
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
-        btns[(i - 1 + btns.length) % btns.length].focus();
+        cards[(i - 1 + cards.length) % cards.length].focus();
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
-        btns[(i + 1) % btns.length].focus();
+        cards[(i + 1) % cards.length].focus();
       } else if (e.key === 'Home') {
         e.preventDefault();
-        btns[0].focus();
+        cards[0].focus();
       } else if (e.key === 'End') {
         e.preventDefault();
-        btns[btns.length - 1].focus();
+        cards[cards.length - 1].focus();
       }
     });
   }
+}
+
+function openSettingsMenu() {
+  const settings = document.querySelector('.settings');
+  const trigger = document.getElementById('settings-trigger');
+  const fullscreen = document.getElementById('settings-fullscreen');
+  if (settings && trigger) {
+    settings.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    if (fullscreen) {
+      fullscreen.classList.add('is-open');
+      fullscreen.setAttribute('aria-hidden', 'false');
+    }
+  }
+}
+
+function closeSettingsMenu() {
+  const settings = document.querySelector('.settings');
+  const trigger = document.getElementById('settings-trigger');
+  const fullscreen = document.getElementById('settings-fullscreen');
+  if (settings && trigger) {
+    settings.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    if (fullscreen) {
+      fullscreen.classList.remove('is-open');
+      fullscreen.setAttribute('aria-hidden', 'true');
+    }
+  }
+}
+
+function initSettingsMenu() {
+  const trigger = document.getElementById('settings-trigger');
+  const settings = document.querySelector('.settings');
+  const overlay = document.getElementById('settings-overlay');
+  const closeBtn = document.getElementById('settings-close');
+  if (!trigger || !settings) return;
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (settings.classList.contains('is-open')) {
+      closeSettingsMenu();
+    } else {
+      openSettingsMenu();
+    }
+  });
+  if (overlay) {
+    overlay.addEventListener('click', closeSettingsMenu);
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeSettingsMenu);
+  }
+  document.addEventListener('click', (e) => {
+    if (!document.querySelector('.top-controls')?.contains(e.target)) closeSettingsMenu();
+  });
+}
+
+function initAudioToggle() {
+  const btn = document.getElementById('audio-toggle');
+  if (!btn) return;
+  const updateUi = () => {
+    const on = getSoundEnabled();
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
+    btn.setAttribute('title', on ? 'Turn sound off' : 'Turn sound on');
+  };
+  updateUi();
+  btn.addEventListener('click', () => {
+    const on = !getSoundEnabled();
+    setSoundEnabled(on);
+    updateUi();
+  });
+}
+
+function setDurationPresetActive(inputId, value) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const group = input.closest('.settings__duration-group');
+  if (!group) return;
+  const duration = inputId.indexOf('focus') !== -1 ? 'focus' : 'break';
+  const v = parseInt(value, 10);
+  if (!Number.isFinite(v)) return;
+  const pomodoroMin = duration === 'focus' ? 25 : 5;
+  const otherPresets = duration === 'focus' ? [15, 40, 55] : [10, 15];
+  const isPomodoro = v === pomodoroMin;
+
+  const toggleBtn = group.querySelector('.settings__pomodoro-toggle');
+  if (toggleBtn) {
+    toggleBtn.setAttribute('aria-checked', isPomodoro ? 'true' : 'false');
+  }
+  group.classList.toggle('is-pomodoro', isPomodoro);
+
+  const othersId = duration === 'focus' ? 'settings-focus-others' : 'settings-break-others';
+  const othersContainer = document.getElementById(othersId);
+  if (othersContainer) {
+    othersContainer.setAttribute('aria-hidden', isPomodoro ? 'true' : 'false');
+  }
+
+  const cards = group.querySelectorAll('.settings__duration-others .settings__duration-card');
+  cards.forEach((btn) => {
+    const min = parseInt(btn.getAttribute('data-min'), 10);
+    const isSelected = v === min;
+    btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    btn.classList.toggle('is-selected', isSelected);
+  });
+
+  const customRow = group.querySelector('.settings__custom-row');
+  if (customRow) {
+    const isCustomSelected = !isPomodoro && otherPresets.indexOf(v) === -1;
+    customRow.classList.toggle('is-selected', isCustomSelected);
+  }
+}
+
+function initDefaultDurations() {
+  const focusInput = document.getElementById('settings-default-focus');
+  const breakInput = document.getElementById('settings-default-break');
+  if (!focusInput || !breakInput) return;
+  try {
+    const savedFocus = localStorage.getItem(STORAGE_FOCUS_MIN_KEY);
+    const savedBreak = localStorage.getItem(STORAGE_BREAK_MIN_KEY);
+    const focusVal = savedFocus !== null && Number.isFinite(parseInt(savedFocus, 10)) ? savedFocus : String(DEFAULT_WORK_MIN);
+    const breakVal = savedBreak !== null && Number.isFinite(parseInt(savedBreak, 10)) ? savedBreak : String(DEFAULT_BREAK_MIN);
+    focusInput.value = focusVal;
+    breakInput.value = breakVal;
+    setDurationPresetActive('settings-default-focus', focusVal);
+    setDurationPresetActive('settings-default-break', breakVal);
+  } catch (_) {
+    focusInput.value = String(DEFAULT_WORK_MIN);
+    breakInput.value = String(DEFAULT_BREAK_MIN);
+    setDurationPresetActive('settings-default-focus', String(DEFAULT_WORK_MIN));
+    setDurationPresetActive('settings-default-break', String(DEFAULT_BREAK_MIN));
+  }
+  const applySaved = (key, value, isFocus) => {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (_) {}
+    if (!state.isRunning && !state.hasStartedInCurrentMode) {
+      if (isFocus && state.currentMode === 'focus') {
+        state.timeRemaining = value * 60;
+        state.sessionDurationSeconds = value * 60;
+      }
+      if (!isFocus && state.currentMode === 'break') {
+        state.timeRemaining = value * 60;
+        state.sessionDurationSeconds = value * 60;
+      }
+      updateDOM();
+    }
+  };
+
+  document.querySelectorAll('.settings__pomodoro-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const duration = btn.getAttribute('data-duration');
+      const pomodoroMin = duration === 'focus' ? 25 : 5;
+      const firstOther = duration === 'focus' ? 15 : 10;
+      const input = duration === 'focus' ? focusInput : breakInput;
+      const inputId = input.id;
+      const key = duration === 'focus' ? STORAGE_FOCUS_MIN_KEY : STORAGE_BREAK_MIN_KEY;
+      const isOn = btn.getAttribute('aria-checked') === 'true';
+      const newVal = isOn ? firstOther : pomodoroMin;
+      input.value = String(newVal);
+      setDurationPresetActive(inputId, String(newVal));
+      applySaved(key, newVal, duration === 'focus');
+    });
+  });
+
+  document.querySelectorAll('.settings__duration-others .settings__duration-card').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const duration = btn.getAttribute('data-duration');
+      const min = parseInt(btn.getAttribute('data-min'), 10);
+      if (!Number.isFinite(min)) return;
+      const input = duration === 'focus' ? focusInput : breakInput;
+      const inputId = input.id;
+      const key = duration === 'focus' ? STORAGE_FOCUS_MIN_KEY : STORAGE_BREAK_MIN_KEY;
+      input.value = String(min);
+      setDurationPresetActive(inputId, String(min));
+      applySaved(key, min, duration === 'focus');
+    });
+  });
+
+  const saveAndClamp = (key, inputId, isFocus) => (e) => {
+    const el = e.target;
+    let v = parseInt(el.value, 10);
+    if (!Number.isFinite(v)) return;
+    v = Math.max(1, Math.min(99, v));
+    el.value = String(v);
+    setDurationPresetActive(inputId, String(v));
+    applySaved(key, v, isFocus);
+  };
+  focusInput.addEventListener('change', saveAndClamp(STORAGE_FOCUS_MIN_KEY, 'settings-default-focus', true));
+  breakInput.addEventListener('change', saveAndClamp(STORAGE_BREAK_MIN_KEY, 'settings-default-break', false));
 }
 
 const PAUSE_SHRINK_MS = 350;
@@ -427,16 +658,16 @@ function tick() {
   state.timeRemaining -= 1;
   if (state.timeRemaining <= 0) {
     if (state.currentMode === 'focus' && state.skipNextBreak) {
-      state.timeRemaining = WORK_DURATION;
+      state.timeRemaining = getWorkDurationSeconds();
       state.skipNextBreak = false;
     } else {
-      playModeSwitchSound();
+      if (getSoundEnabled()) playModeSwitchSound();
       document.body.classList.add('timer-zero-flash');
       const flashDuration = 600;
       setTimeout(() => document.body.classList.remove('timer-zero-flash'), flashDuration);
       const wasBreak = state.currentMode === 'break';
       state.currentMode = state.currentMode === 'focus' ? 'break' : 'focus';
-      state.timeRemaining = state.currentMode === 'focus' ? WORK_DURATION : BREAK_DURATION;
+      state.timeRemaining = state.currentMode === 'focus' ? getWorkDurationSeconds() : getBreakDurationSeconds();
       state.sessionDurationSeconds = state.timeRemaining;
       if (state.currentMode === 'focus' && wasBreak && SHOW_START_BREAK) scheduleAdd5Reveal();
     }
@@ -484,7 +715,7 @@ function reset() {
     clearTimeout(add5RevealTimeout);
     add5RevealTimeout = null;
   }
-  state.timeRemaining = state.currentMode === 'focus' ? WORK_DURATION : BREAK_DURATION;
+  state.timeRemaining = state.currentMode === 'focus' ? getWorkDurationSeconds() : getBreakDurationSeconds();
   state.sessionDurationSeconds = state.timeRemaining;
   state.lastMinutesElapsed = -1;
   controlsRow.classList.remove('add-5-revealed');
@@ -496,8 +727,8 @@ function startBreakNow(skipIntro) {
   state.lastMinutesElapsed = -1;
   if (skipIntro) {
     state.hasStartedInCurrentMode = true;
-    state.timeRemaining = BREAK_DURATION;
-    state.sessionDurationSeconds = BREAK_DURATION;
+    state.timeRemaining = getBreakDurationSeconds();
+    state.sessionDurationSeconds = getBreakDurationSeconds();
     if (breakIntroAnimationId) {
       clearInterval(breakIntroAnimationId);
       breakIntroAnimationId = null;
@@ -510,7 +741,7 @@ function startBreakNow(skipIntro) {
     return;
   }
   state.hasStartedInCurrentMode = false;
-  state.sessionDurationSeconds = BREAK_DURATION;
+  state.sessionDurationSeconds = getBreakDurationSeconds();
   if (breakIntroAnimationId) {
     clearInterval(breakIntroAnimationId);
     breakIntroAnimationId = null;
@@ -524,9 +755,9 @@ function startBreakNow(skipIntro) {
   const stepMs = 80;
   const incrementSeconds = 60;
   breakIntroAnimationId = setInterval(() => {
-    state.timeRemaining = Math.min(state.timeRemaining + incrementSeconds, BREAK_DURATION);
+    state.timeRemaining = Math.min(state.timeRemaining + incrementSeconds, getBreakDurationSeconds());
     updateDOM();
-    if (state.timeRemaining >= BREAK_DURATION) {
+    if (state.timeRemaining >= getBreakDurationSeconds()) {
       clearInterval(breakIntroAnimationId);
       breakIntroAnimationId = null;
     }
@@ -538,8 +769,8 @@ function startFocusNow(skipIntro) {
   state.lastMinutesElapsed = -1;
   if (skipIntro) {
     state.hasStartedInCurrentMode = true;
-    state.timeRemaining = WORK_DURATION;
-    state.sessionDurationSeconds = WORK_DURATION;
+    state.timeRemaining = getWorkDurationSeconds();
+    state.sessionDurationSeconds = getWorkDurationSeconds();
     if (breakIntroAnimationId) {
       clearInterval(breakIntroAnimationId);
       breakIntroAnimationId = null;
@@ -565,9 +796,9 @@ function startFocusNow(skipIntro) {
   const stepMs = 80;
   const incrementSeconds = 5 * 60;
   focusIntroAnimationId = setInterval(() => {
-    state.timeRemaining = Math.min(state.timeRemaining + incrementSeconds, WORK_DURATION);
+    state.timeRemaining = Math.min(state.timeRemaining + incrementSeconds, getWorkDurationSeconds());
     updateDOM();
-    if (state.timeRemaining >= WORK_DURATION) {
+    if (state.timeRemaining >= getWorkDurationSeconds()) {
       clearInterval(focusIntroAnimationId);
       focusIntroAnimationId = null;
     }
@@ -646,5 +877,10 @@ if (btnAdjustTimer) {
 
 // Theme (apply before first paint) and initial render
 initTheme();
+  initSettingsMenu();
+  initAudioToggle();
+  initDefaultDurations();
+state.timeRemaining = getWorkDurationSeconds();
+state.sessionDurationSeconds = getWorkDurationSeconds();
 requestAnimationFrame(updateThemeSwitcherIndicator);
 updateDOM();
