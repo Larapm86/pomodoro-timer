@@ -19,135 +19,6 @@
             </button>
         </div>
     </div>
-    <div class="settings__fullscreen" id="settings-fullscreen" aria-hidden="true">
-            <div class="settings-overlay" id="settings-overlay" aria-hidden="true"></div>
-            <div class="settings__panel" id="settings-panel">
-                <header class="settings__header">
-                    <h2 class="settings__heading">Advanced settings</h2>
-                    <button type="button" class="settings__close" id="settings-close" aria-label="Close settings">×</button>
-                </header>
-                <div class="settings__body">
-                    <span id="theme-switcher-live" class="theme-switcher__announcer" aria-live="polite" aria-atomic="true"></span>
-                    <div class="settings__columns">
-                    <section class="settings__section" aria-labelledby="settings-appearance-heading">
-                        <h3 class="settings__section-title" id="settings-appearance-heading">Appearance</h3>
-                        <div class="settings__section-content" aria-labelledby="settings-theme-label">
-                            <span class="sr-only" id="settings-theme-label">Theme</span>
-                            <div class="settings__theme-cards" role="group" aria-label="Theme">
-                                    <button type="button" class="settings__theme-card is-selected" data-theme="default" aria-pressed="true" aria-label="Minimal theme (current)">
-                                        <span class="settings__theme-preview" aria-hidden="true"></span>
-                                        <span class="settings__theme-name">Minimal</span>
-                                    </button>
-                                    <button type="button" class="settings__theme-card" data-theme="cherry" aria-pressed="false" aria-label="Cherry theme">
-                                        <span class="settings__theme-preview" aria-hidden="true"></span>
-                                        <span class="settings__theme-name">Cherry</span>
-                                    </button>
-                                    <button type="button" class="settings__theme-card" data-theme="cherryverse" aria-pressed="false" aria-label="Cherryverse theme">
-                                        <span class="settings__theme-preview" aria-hidden="true"></span>
-                                        <span class="settings__theme-name">Cherryverse</span>
-                                    </button>
-                                    <button type="button" class="settings__theme-card" data-theme="retro" aria-pressed="false" aria-label="Retro pixel theme">
-                                        <span class="settings__theme-preview" aria-hidden="true"></span>
-                                        <span class="settings__theme-name">Retro</span>
-                                    </button>
-                                </div>
-                            </div>
-                    </section>
-                    <section class="settings__section" aria-labelledby="settings-timer-duration-heading">
-                        <h3 class="settings__section-title" id="settings-timer-duration-heading">Timer duration</h3>
-                        <div class="settings__section-content">
-                        <div class="settings__subsection" aria-labelledby="settings-focus-heading">
-                            <h4 class="settings__subsection-title" id="settings-focus-heading">Focus</h4>
-                            <div class="settings__subsection-content" aria-labelledby="settings-focus-heading">
-                                <div class="settings__duration-group">
-                                    <div class="settings__pomodoro-row" data-duration="focus">
-                                        <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-focus" data-duration="focus" data-min="25" role="switch" aria-checked="true" aria-label="Standard 25 minutes">
-                                            <span class="settings__pomodoro-toggle-text">
-                                                <span class="settings__pomodoro-toggle-label">Standard</span>
-                                                <span class="settings__pomodoro-toggle-value">25 min</span>
-                                            </span>
-                                            <span class="settings__pomodoro-switch" aria-hidden="true"><span class="settings__pomodoro-switch-thumb"></span></span>
-                                        </button>
-                                    </div>
-                                    <div class="settings__duration-others" id="settings-focus-others" aria-hidden="true">
-                                        <div class="settings__duration-cards" role="group" aria-label="Other focus duration">
-                                            <button type="button" class="settings__duration-card" data-duration="focus" data-min="15" aria-pressed="false">
-                                                <span class="settings__duration-card-text">
-                                                    <span class="settings__duration-card-desc">Quick Boost</span>
-                                                    <span class="settings__duration-card-value">15 min</span>
-                                                </span>
-                                                <span class="settings__duration-card-check" aria-hidden="true"></span>
-                                            </button>
-                                            <button type="button" class="settings__duration-card" data-duration="focus" data-min="40" aria-pressed="false">
-                                                <span class="settings__duration-card-text">
-                                                    <span class="settings__duration-card-desc">Deep Dive</span>
-                                                    <span class="settings__duration-card-value">40 min</span>
-                                                </span>
-                                                <span class="settings__duration-card-check" aria-hidden="true"></span>
-                                            </button>
-                                            <button type="button" class="settings__duration-card" data-duration="focus" data-min="55" aria-pressed="false">
-                                                <span class="settings__duration-card-text">
-                                                    <span class="settings__duration-card-desc">Power Session</span>
-                                                    <span class="settings__duration-card-value">55 min</span>
-                                                </span>
-                                                <span class="settings__duration-card-check" aria-hidden="true"></span>
-                                            </button>
-                                        </div>
-                                        <div class="settings__custom-row" id="settings-custom-focus-wrap">
-                                            <label for="settings-default-focus" class="settings__custom-label">Custom</label>
-                                            <input type="number" id="settings-default-focus" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom focus duration in minutes">
-                                            <span class="settings__custom-suffix" aria-hidden="true">min</span>
-                                            <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="settings__subsection" aria-labelledby="settings-break-heading">
-                            <h4 class="settings__subsection-title" id="settings-break-heading">Break</h4>
-                            <div class="settings__subsection-content" aria-labelledby="settings-break-heading">
-                                <div class="settings__duration-group">
-                                    <div class="settings__pomodoro-row" data-duration="break">
-                                        <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-break" data-duration="break" data-min="5" role="switch" aria-checked="true" aria-label="Standard 5 minutes">
-                                            <span class="settings__pomodoro-toggle-text">
-                                                <span class="settings__pomodoro-toggle-label">Standard</span>
-                                                <span class="settings__pomodoro-toggle-value">5 min</span>
-                                            </span>
-                                            <span class="settings__pomodoro-switch" aria-hidden="true"><span class="settings__pomodoro-switch-thumb"></span></span>
-                                        </button>
-                                    </div>
-                                    <div class="settings__duration-others" id="settings-break-others" aria-hidden="true">
-                                        <div class="settings__duration-cards" role="group" aria-label="Other break duration">
-                                            <button type="button" class="settings__duration-card" data-duration="break" data-min="10" aria-pressed="false">
-                                                <span class="settings__duration-card-text">
-                                                    <span class="settings__duration-card-desc">Recharge</span>
-                                                    <span class="settings__duration-card-value">10 min</span>
-                                                </span>
-                                                <span class="settings__duration-card-check" aria-hidden="true"></span>
-                                            </button>
-                                            <button type="button" class="settings__duration-card" data-duration="break" data-min="15" aria-pressed="false">
-                                                <span class="settings__duration-card-text">
-                                                    <span class="settings__duration-card-desc">Long Reset</span>
-                                                    <span class="settings__duration-card-value">15 min</span>
-                                                </span>
-                                                <span class="settings__duration-card-check" aria-hidden="true"></span>
-                                            </button>
-                                        </div>
-                                        <div class="settings__custom-row" id="settings-custom-break-wrap">
-                                            <label for="settings-default-break" class="settings__custom-label">Custom</label>
-                                            <input type="number" id="settings-default-break" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom break duration in minutes">
-                                            <span class="settings__custom-suffix" aria-hidden="true">min</span>
-                                            <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                    </section>
-            </div>
-        </div>
-    </div>
     <div id="app" data-mode="focus">
         <div class="pomodoro">
             <div class="pomodoro__copy">
@@ -179,6 +50,140 @@
             </div>
             <div class="pomodoro__actions" id="pomodoro-actions" aria-label="Mode-specific actions" hidden>
                 <button type="button" class="pomodoro__btn pomodoro__btn--secondary" id="btn-start-break" aria-label="Start break">Start break</button>
+            </div>
+        </div>
+    </div>
+    <div class="settings__fullscreen" id="settings-fullscreen" aria-hidden="true">
+        <div class="settings-overlay" id="settings-overlay" aria-hidden="true"></div>
+        <div class="settings__panel" id="settings-panel">
+            <header class="settings__header">
+                <h2 class="settings__heading">Advanced settings</h2>
+                <button type="button" class="settings__close" id="settings-close" aria-label="Close settings">×</button>
+            </header>
+            <div class="settings__body">
+                <span id="theme-switcher-live" class="theme-switcher__announcer" aria-live="polite" aria-atomic="true"></span>
+                <div class="settings__columns">
+                    <section class="settings__section" aria-labelledby="settings-appearance-heading">
+                        <h3 class="settings__section-title" id="settings-appearance-heading">Appearance</h3>
+                        <div class="settings__section-content">
+                            <div class="settings__subsection" aria-labelledby="settings-theme-heading">
+                                <h4 class="settings__subsection-title" id="settings-theme-heading">Theme</h4>
+                                <div class="settings__subsection-content">
+                                    <div class="settings__theme-cards" role="group" aria-label="Theme">
+                                <button type="button" class="settings__theme-card is-selected" data-theme="default" aria-pressed="true" aria-label="Minimal theme (current)">
+                                    <span class="settings__theme-preview" aria-hidden="true"></span>
+                                    <span class="settings__theme-name">Minimal</span>
+                                </button>
+                                <button type="button" class="settings__theme-card" data-theme="cherry" aria-pressed="false" aria-label="Cherry theme">
+                                    <span class="settings__theme-preview" aria-hidden="true"></span>
+                                    <span class="settings__theme-name">Cherry</span>
+                                </button>
+                                <button type="button" class="settings__theme-card" data-theme="cherryverse" aria-pressed="false" aria-label="Cherryverse theme">
+                                    <span class="settings__theme-preview" aria-hidden="true"></span>
+                                    <span class="settings__theme-name">Cherryverse</span>
+                                </button>
+                                <button type="button" class="settings__theme-card" data-theme="retro" aria-pressed="false" aria-label="Retro pixel theme">
+                                    <span class="settings__theme-preview" aria-hidden="true"></span>
+                                    <span class="settings__theme-name">Retro</span>
+                                </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="settings__section" aria-labelledby="settings-timer-duration-heading">
+                        <h3 class="settings__section-title" id="settings-timer-duration-heading">Timer duration</h3>
+                        <div class="settings__section-content">
+                            <div class="settings__subsection" aria-labelledby="settings-focus-heading">
+                                <h4 class="settings__subsection-title" id="settings-focus-heading">Focus</h4>
+                                <div class="settings__subsection-content" aria-labelledby="settings-focus-heading">
+                                    <div class="settings__duration-group">
+                                        <div class="settings__pomodoro-row" data-duration="focus">
+                                            <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-focus" data-duration="focus" data-min="25" role="switch" aria-checked="true" aria-label="Standard 25 minutes">
+                                                <span class="settings__pomodoro-toggle-text">
+                                                    <span class="settings__pomodoro-toggle-label">Standard</span>
+                                                    <span class="settings__pomodoro-toggle-value">25 min</span>
+                                                </span>
+                                                <span class="settings__pomodoro-switch" aria-hidden="true"><span class="settings__pomodoro-switch-thumb"></span></span>
+                                            </button>
+                                        </div>
+                                        <div class="settings__duration-others" id="settings-focus-others" aria-hidden="true">
+                                            <div class="settings__duration-cards" role="group" aria-label="Other focus duration">
+                                                <button type="button" class="settings__duration-card" data-duration="focus" data-min="15" aria-pressed="false">
+                                                    <span class="settings__duration-card-text">
+                                                        <span class="settings__duration-card-desc">Quick Boost</span>
+                                                        <span class="settings__duration-card-value">15 min</span>
+                                                    </span>
+                                                    <span class="settings__duration-card-check" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" class="settings__duration-card" data-duration="focus" data-min="40" aria-pressed="false">
+                                                    <span class="settings__duration-card-text">
+                                                        <span class="settings__duration-card-desc">Deep Dive</span>
+                                                        <span class="settings__duration-card-value">40 min</span>
+                                                    </span>
+                                                    <span class="settings__duration-card-check" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" class="settings__duration-card" data-duration="focus" data-min="55" aria-pressed="false">
+                                                    <span class="settings__duration-card-text">
+                                                        <span class="settings__duration-card-desc">Power Session</span>
+                                                        <span class="settings__duration-card-value">55 min</span>
+                                                    </span>
+                                                    <span class="settings__duration-card-check" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                            <div class="settings__custom-row" id="settings-custom-focus-wrap">
+                                                <label for="settings-default-focus" class="settings__custom-label">Custom</label>
+                                                <input type="number" id="settings-default-focus" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom focus duration in minutes">
+                                                <span class="settings__custom-suffix" aria-hidden="true">min</span>
+                                                <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="settings__subsection" aria-labelledby="settings-break-heading">
+                                <h4 class="settings__subsection-title" id="settings-break-heading">Break</h4>
+                                <div class="settings__subsection-content" aria-labelledby="settings-break-heading">
+                                    <div class="settings__duration-group">
+                                        <div class="settings__pomodoro-row" data-duration="break">
+                                            <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-break" data-duration="break" data-min="5" role="switch" aria-checked="true" aria-label="Standard 5 minutes">
+                                                <span class="settings__pomodoro-toggle-text">
+                                                    <span class="settings__pomodoro-toggle-label">Standard</span>
+                                                    <span class="settings__pomodoro-toggle-value">5 min</span>
+                                                </span>
+                                                <span class="settings__pomodoro-switch" aria-hidden="true"><span class="settings__pomodoro-switch-thumb"></span></span>
+                                            </button>
+                                        </div>
+                                        <div class="settings__duration-others" id="settings-break-others" aria-hidden="true">
+                                            <div class="settings__duration-cards" role="group" aria-label="Other break duration">
+                                                <button type="button" class="settings__duration-card" data-duration="break" data-min="10" aria-pressed="false">
+                                                    <span class="settings__duration-card-text">
+                                                        <span class="settings__duration-card-desc">Recharge</span>
+                                                        <span class="settings__duration-card-value">10 min</span>
+                                                    </span>
+                                                    <span class="settings__duration-card-check" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" class="settings__duration-card" data-duration="break" data-min="15" aria-pressed="false">
+                                                    <span class="settings__duration-card-text">
+                                                        <span class="settings__duration-card-desc">Long Reset</span>
+                                                        <span class="settings__duration-card-value">15 min</span>
+                                                    </span>
+                                                    <span class="settings__duration-card-check" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                            <div class="settings__custom-row" id="settings-custom-break-wrap">
+                                                <label for="settings-default-break" class="settings__custom-label">Custom</label>
+                                                <input type="number" id="settings-default-break" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom break duration in minutes">
+                                                <span class="settings__custom-suffix" aria-hidden="true">min</span>
+                                                <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>

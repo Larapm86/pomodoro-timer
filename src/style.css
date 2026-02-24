@@ -185,7 +185,7 @@ body.timer-zero-flash {
 
 #app {
   position: relative;
-  z-index: 0;
+  z-index: 1;
   width: 100%;
   max-width: 24rem;
   padding: var(--space-lg) var(--space-xl);
