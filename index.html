@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Pomodoro Timer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +15,11 @@
         </button>
         <div class="settings" aria-label="Settings">
             <button type="button" class="settings__trigger" id="settings-trigger" aria-label="Open settings" aria-expanded="false" aria-haspopup="true">
-                <span class="settings__icon" aria-hidden="true">⛭</span>
+                <span class="settings__icon" aria-hidden="true">⚙</span>
             </button>
         </div>
-        <div class="settings__fullscreen" id="settings-fullscreen" aria-hidden="true">
+    </div>
+    <div class="settings__fullscreen" id="settings-fullscreen" aria-hidden="true">
             <div class="settings-overlay" id="settings-overlay" aria-hidden="true"></div>
             <div class="settings__panel" id="settings-panel">
                 <header class="settings__header">
@@ -144,8 +145,6 @@
                         </div>
                         </div>
                     </section>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
