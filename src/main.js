@@ -172,6 +172,7 @@ function openSettingsMenu() {
   if (settings && trigger) {
     settings.classList.add('is-open');
     trigger.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('settings-panel-open');
     if (fullscreen) {
       fullscreen.classList.add('is-open');
       fullscreen.setAttribute('aria-hidden', 'false');
@@ -186,6 +187,7 @@ function closeSettingsMenu() {
   if (settings && trigger) {
     settings.classList.remove('is-open');
     trigger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('settings-panel-open');
     if (fullscreen) {
       fullscreen.classList.remove('is-open');
       fullscreen.setAttribute('aria-hidden', 'true');
@@ -214,7 +216,11 @@ function initSettingsMenu() {
     closeBtn.addEventListener('click', closeSettingsMenu);
   }
   document.addEventListener('click', (e) => {
-    if (!document.querySelector('.top-controls')?.contains(e.target)) closeSettingsMenu();
+    const topControls = document.querySelector('.top-controls');
+    const fullscreen = document.getElementById('settings-fullscreen');
+    const insideControls = topControls?.contains(e.target);
+    const insidePanel = fullscreen?.contains(e.target);
+    if (!insideControls && !insidePanel) closeSettingsMenu();
   });
 }
 
@@ -877,7 +883,8 @@ if (btnAdjustTimer) {
 
 // Theme (apply before first paint) and initial render
 initTheme();
-  initSettingsMenu();
+document.body.classList.remove('settings-panel-open');
+initSettingsMenu();
   initAudioToggle();
   initDefaultDurations();
 state.timeRemaining = getWorkDurationSeconds();

@@ -184,6 +184,8 @@ body.timer-zero-flash {
 }
 
 #app {
+  position: relative;
+  z-index: 0;
   width: 100%;
   max-width: 24rem;
   padding: var(--space-lg) var(--space-xl);
@@ -863,6 +865,12 @@ body[data-theme="cherry"][data-mode="focus"] .audio-toggle:hover {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  isolation: isolate;
+}
+
+/* When settings panel is open, put app behind the panel (don't hide – panel has higher z-index) */
+body.settings-panel-open #app {
+  z-index: -1;
 }
 
 .settings-overlay {
