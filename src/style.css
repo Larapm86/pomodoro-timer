@@ -1,9 +1,8 @@
 /* ============================================
    Pomodoro Timer – Styles
    ============================================
-   Sections: Custom properties (:root, focus mode) · Base & layout · Pomodoro components
-   · Controls & buttons · Progress circles · Theme: Default (Minimal) · Retro · Cherryverse
-   · Cherry (warm, CTA hierarchy: primary / secondary / tertiary)
+   Sections: Custom properties · Base & layout · Pomodoro · Controls & buttons · Progress circles
+   · Settings (timer duration, themes) · Themes: Default · Retro · Cherryverse · Cherry
    ============================================ */
 
 :root {
@@ -911,7 +910,7 @@ body.settings-panel-open #app {
   color: var(--color-text);
 }
 
-/* Section + row layout (Advanced settings–style: label left, control right, separators) */
+/* Section + row layout (Settings: label left, control right, separators) */
 .settings__section {
   display: flex;
   flex-direction: column;
@@ -1021,13 +1020,14 @@ body.settings-panel-open #app {
   border: none;
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease, transform 0.25s ease;
+  transition: color 0.2s ease, background 0.2s ease;
+  transform: none;
 }
 
 .settings__close:hover {
   color: var(--color-text);
   background: var(--color-surface-elevated);
-  transform: rotate(10deg);
+  transform: none;
 }
 
 .settings__close:focus {
@@ -1280,14 +1280,28 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   transform: rotate(10deg);
 }
 
+/* ----- Settings: Timer duration (Focus / Break) ----- */
 .settings__duration-group {
   margin-top: 0;
+  width: 100%;
 }
 
-/* Pomodoro toggle: when on = selected, when off = other options visible */
+/* Single card: one rounded container, toggle row then divider then list rows (like Automatic Updates / Suggest on Lock Screen) */
+.settings__duration-card-wrap {
+  width: 100%;
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Toggle = first row inside the card */
 .settings__pomodoro-row {
   width: 100%;
-  margin-bottom: var(--space-sm);
+}
+
+.settings__duration-group:not(.is-pomodoro) .settings__pomodoro-row {
+  border-bottom: 1px solid var(--color-border);
 }
 
 .settings__pomodoro-toggle {
@@ -1300,23 +1314,21 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
-  background: var(--color-surface-elevated);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  background: transparent;
+  border: none;
+  border-radius: 0;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease;
   box-sizing: border-box;
   position: relative;
 }
 
 .settings__pomodoro-toggle:hover {
-  border-color: var(--color-text-muted);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .settings__pomodoro-toggle[aria-checked="true"] {
-  border-color: var(--color-work-primary);
-  background: rgba(124, 154, 161, 0.2);
-  box-shadow: 0 0 0 1px var(--color-work-primary);
+  background: rgba(124, 154, 161, 0.15);
 }
 
 .settings__pomodoro-toggle:focus {
@@ -1339,6 +1351,7 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
 }
 
 .settings__pomodoro-toggle-value {
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   font-weight: var(--font-weight-normal);
 }
@@ -1381,23 +1394,91 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
-/* When Pomodoro is selected, hide the "other" options (JS adds .is-pomodoro) */
-.settings__duration-group.is-pomodoro .settings__duration-others {
-  display: none;
+/* When Standard toggle is ON: section collapsed (only toggle row visible).
+   When Standard toggle is OFF: section expanded, all options in same container with dividers. */
+.settings__duration-group.is-pomodoro .settings__duration-others,
+.settings__duration-group.is-pomodoro .settings__custom-row {
+  display: none !important;
 }
 
-.settings__duration-others .settings__duration-cards {
-  margin-top: var(--space-sm);
-}
-
-/* Duration cards – full-width rows, check on the right */
-.settings__duration-cards {
-  display: flex;
+.settings__duration-group:not(.is-pomodoro) .settings__duration-others {
+  display: flex !important;
   flex-direction: column;
-  gap: var(--space-sm);
   width: 100%;
 }
 
+.settings__duration-group:not(.is-pomodoro) .settings__custom-row {
+  display: flex !important;
+}
+
+.settings__duration-others {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+.settings__duration-others .settings__duration-presets {
+  margin-top: 0;
+  border: none;
+  background: transparent;
+}
+
+/* Presets: list rows inside same card, dividers between (no separate boxes). */
+.settings__duration-presets {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Force list rows inside the single card: no separate boxes, only dividers */
+.settings__duration-card-wrap .settings__duration-others .settings__duration-presets .settings__duration-card,
+.settings__duration-card-wrap .settings__duration-presets .settings__duration-card,
+.settings__duration-presets .settings__duration-card {
+  border-radius: 0 !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-width: 0 0 1px 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  margin: 0;
+}
+
+.settings__duration-presets .settings__duration-card:last-child {
+  border-bottom: none !important;
+  border-width: 0 !important;
+}
+
+.settings__duration-presets .settings__duration-card:hover {
+  box-shadow: none !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.settings__duration-presets .settings__duration-card.is-selected,
+.settings__duration-presets .settings__duration-card[aria-pressed="true"] {
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-width: 0 0 1px 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: rgba(124, 154, 161, 0.12) !important;
+}
+
+.settings__duration-presets .settings__duration-card.is-selected:last-child,
+.settings__duration-presets .settings__duration-card[aria-pressed="true"]:last-child {
+  border-bottom: none !important;
+  border-width: 0 !important;
+}
+
+/* Duration card base (also used outside presets if needed) */
 .settings__duration-card {
   display: flex;
   flex-direction: row;
@@ -1415,7 +1496,7 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   border-radius: var(--radius-lg);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -1459,7 +1540,7 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
 
 .settings__duration-card-value {
   display: block;
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-normal);
   color: var(--color-text-muted);
   line-height: 1.25;
@@ -1498,13 +1579,18 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   display: flex;
 }
 
-/* Custom card: match other cards’ typeface, size, color */
-/* Custom duration row: label + input + min (always visible) */
+/* Custom row: inside card-wrap, divider above. */
+.settings__duration-card-wrap .settings__custom-row {
+  margin-top: 0;
+  border-top: 1px solid var(--color-border);
+}
+
 .settings__custom-row {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   width: 100%;
   box-sizing: border-box;
 }
@@ -1528,7 +1614,7 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   width: 4rem;
   padding: var(--space-sm) var(--space-md);
   font-family: var(--font-mono);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-normal);
   color: var(--color-text);
   background: var(--color-surface-elevated);
@@ -1608,15 +1694,15 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
   }
 }
 
-/* iPhone 13 and similar: ensure settings/audio are visible and tappable */
+/* iPhone 13 and similar: ensure settings/audio are visible and tappable; no color pill */
 @media (max-width: 430px) {
   .top-controls {
     top: max(var(--space-md), env(safe-area-inset-top, 0px));
     padding: var(--space-sm);
     padding-right: max(var(--space-sm), env(safe-area-inset-right, 0px));
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: var(--radius-full);
     -webkit-tap-highlight-color: transparent;
+    background: transparent;
+    border-radius: 0;
   }
 
   .audio-toggle,
@@ -1625,14 +1711,42 @@ body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="
     min-height: 2.75rem;
     width: 2.75rem;
     height: 2.75rem;
-    color: #fff;
+    background: transparent;
   }
 
   .audio-toggle:hover,
+  .audio-toggle:active,
   .settings__trigger:hover,
-  .settings__trigger[aria-expanded="true"] {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+  .settings__trigger[aria-expanded="true"],
+  .settings__trigger:active {
+    background: transparent;
+  }
+
+  body[data-theme="default"][data-mode="focus"] .audio-toggle:hover,
+  body[data-theme="default"][data-mode="focus"] .settings__trigger:hover,
+  body[data-theme="default"][data-mode="focus"] .settings__trigger[aria-expanded="true"] {
+    background: transparent;
+  }
+
+  body[data-theme="retro"] .audio-toggle:hover,
+  body[data-theme="retro"] .settings__trigger:hover,
+  body[data-theme="retro"] .settings__trigger[aria-expanded="true"] {
+    background: transparent;
+  }
+
+  body[data-theme="cherryverse"] .audio-toggle:hover,
+  body[data-theme="cherryverse"] .settings__trigger:hover,
+  body[data-theme="cherryverse"] .settings__trigger[aria-expanded="true"] {
+    background: transparent;
+  }
+
+  body[data-theme="cherry"] .audio-toggle:hover,
+  body[data-theme="cherry"] .settings__trigger:hover,
+  body[data-theme="cherry"] .settings__trigger[aria-expanded="true"],
+  body[data-theme="cherry"][data-mode="focus"] .audio-toggle:hover,
+  body[data-theme="cherry"][data-mode="focus"] .settings__trigger:hover,
+  body[data-theme="cherry"][data-mode="focus"] .settings__trigger[aria-expanded="true"] {
+    background: transparent;
   }
 
   .settings__icon {
@@ -1930,6 +2044,10 @@ body[data-theme="retro"] .settings__pomodoro-toggle {
   padding: 0.25rem 0.75rem;
 }
 
+body[data-theme="retro"] .settings__pomodoro-toggle-value {
+  font-size: 0.5rem;
+}
+
 body[data-theme="retro"] .settings__theme-name {
   font-size: 0.5rem;
   font-weight: var(--font-weight-medium);
@@ -1946,7 +2064,7 @@ body[data-theme="retro"] .settings__duration-card-desc {
 }
 
 body[data-theme="retro"] .settings__duration-card-value {
-  font-size: 0.4375rem;
+  font-size: 0.5rem;
 }
 
 body[data-theme="retro"] .settings__duration-card-check {

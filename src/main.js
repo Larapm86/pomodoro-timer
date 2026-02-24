@@ -9,6 +9,9 @@ const STORAGE_BREAK_MIN_KEY = 'pomodoro-default-break-min';
 const FOCUS_PRESET_MINS = [15, 25, 40, 55];
 /** Break presets: 5 (short), 10 (relaxed), 15 (long). */
 const BREAK_PRESET_MINS = [5, 10, 15];
+/** After this many focus sessions, next break is long (Long Reset). */
+const ROUNDS_BEFORE_LONG_BREAK = 4;
+const LONG_BREAK_MIN = 15;
 
 function getWorkDurationSeconds() {
   try {
@@ -37,6 +40,8 @@ const state = {
   lastMinutesElapsed: -1,
   hasStartedInCurrentMode: false,
   sessionDurationSeconds: DEFAULT_WORK_MIN * 60,
+  /** Number of completed focus sessions in current cycle; after ROUNDS_BEFORE_LONG_BREAK, next break is long. */
+  focusSessionsCompleted: 0,
 };
 
 let intervalId = null;
@@ -257,12 +262,28 @@ function setDurationPresetActive(inputId, value) {
   if (toggleBtn) {
     toggleBtn.setAttribute('aria-checked', isPomodoro ? 'true' : 'false');
   }
-  group.classList.toggle('is-pomodoro', isPomodoro);
+  if (isPomodoro) {
+    group.classList.add('is-pomodoro');
+  } else {
+    group.classList.remove('is-pomodoro');
+  }
 
   const othersId = duration === 'focus' ? 'settings-focus-others' : 'settings-break-others';
   const othersContainer = document.getElementById(othersId);
   if (othersContainer) {
     othersContainer.setAttribute('aria-hidden', isPomodoro ? 'true' : 'false');
+    othersContainer.style.display = isPomodoro ? 'none' : '';
+    othersContainer.style.visibility = isPomodoro ? 'hidden' : 'visible';
+    othersContainer.style.overflow = isPomodoro ? 'hidden' : '';
+    if (!isPomodoro) {
+      othersContainer.style.height = '';
+      othersContainer.style.minHeight = '';
+    }
+  }
+  const customRowEl = group.querySelector('.settings__custom-row');
+  if (customRowEl) {
+    customRowEl.style.display = isPomodoro ? 'none' : '';
+    customRowEl.style.visibility = isPomodoro ? 'hidden' : 'visible';
   }
 
   const cards = group.querySelectorAll('.settings__duration-others .settings__duration-card');
@@ -673,7 +694,18 @@ function tick() {
       setTimeout(() => document.body.classList.remove('timer-zero-flash'), flashDuration);
       const wasBreak = state.currentMode === 'break';
       state.currentMode = state.currentMode === 'focus' ? 'break' : 'focus';
-      state.timeRemaining = state.currentMode === 'focus' ? getWorkDurationSeconds() : getBreakDurationSeconds();
+      if (state.currentMode === 'break') {
+        state.focusSessionsCompleted += 1;
+        const useLongBreak = state.focusSessionsCompleted >= ROUNDS_BEFORE_LONG_BREAK;
+        if (useLongBreak) {
+          state.focusSessionsCompleted = 0;
+          state.timeRemaining = LONG_BREAK_MIN * 60;
+        } else {
+          state.timeRemaining = getBreakDurationSeconds();
+        }
+      } else {
+        state.timeRemaining = getWorkDurationSeconds();
+      }
       state.sessionDurationSeconds = state.timeRemaining;
       if (state.currentMode === 'focus' && wasBreak && SHOW_START_BREAK) scheduleAdd5Reveal();
     }
@@ -709,6 +741,7 @@ function reset() {
   state.isRunning = false;
   state.skipNextBreak = false;
   state.hasRevealedActions = false;
+  state.focusSessionsCompleted = 0;
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;

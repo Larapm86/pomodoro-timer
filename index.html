@@ -57,7 +57,7 @@
         <div class="settings-overlay" id="settings-overlay" aria-hidden="true"></div>
         <div class="settings__panel" id="settings-panel">
             <header class="settings__header">
-                <h2 class="settings__heading">Advanced settings</h2>
+                <h2 class="settings__heading">Settings</h2>
                 <button type="button" class="settings__close" id="settings-close" aria-label="Close settings">×</button>
             </header>
             <div class="settings__body">
@@ -98,6 +98,7 @@
                                 <h4 class="settings__subsection-title" id="settings-focus-heading">Focus</h4>
                                 <div class="settings__subsection-content" aria-labelledby="settings-focus-heading">
                                     <div class="settings__duration-group">
+                                        <div class="settings__duration-card-wrap">
                                         <div class="settings__pomodoro-row" data-duration="focus">
                                             <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-focus" data-duration="focus" data-min="25" role="switch" aria-checked="true" aria-label="Standard 25 minutes">
                                                 <span class="settings__pomodoro-toggle-text">
@@ -108,7 +109,7 @@
                                             </button>
                                         </div>
                                         <div class="settings__duration-others" id="settings-focus-others" aria-hidden="true">
-                                            <div class="settings__duration-cards" role="group" aria-label="Other focus duration">
+                                            <div class="settings__duration-presets" role="group" aria-label="Other focus duration">
                                                 <button type="button" class="settings__duration-card" data-duration="focus" data-min="15" aria-pressed="false">
                                                     <span class="settings__duration-card-text">
                                                         <span class="settings__duration-card-desc">Quick Boost</span>
@@ -131,12 +132,13 @@
                                                     <span class="settings__duration-card-check" aria-hidden="true"></span>
                                                 </button>
                                             </div>
-                                            <div class="settings__custom-row" id="settings-custom-focus-wrap">
-                                                <label for="settings-default-focus" class="settings__custom-label">Custom</label>
-                                                <input type="number" id="settings-default-focus" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom focus duration in minutes">
-                                                <span class="settings__custom-suffix" aria-hidden="true">min</span>
-                                                <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
-                                            </div>
+                                        </div>
+                                        <div class="settings__custom-row" id="settings-custom-focus-wrap">
+                                            <label for="settings-default-focus" class="settings__custom-label">Custom</label>
+                                            <input type="number" id="settings-default-focus" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom focus duration in minutes">
+                                            <span class="settings__custom-suffix" aria-hidden="true">min</span>
+                                            <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
@@ -145,6 +147,7 @@
                                 <h4 class="settings__subsection-title" id="settings-break-heading">Break</h4>
                                 <div class="settings__subsection-content" aria-labelledby="settings-break-heading">
                                     <div class="settings__duration-group">
+                                        <div class="settings__duration-card-wrap">
                                         <div class="settings__pomodoro-row" data-duration="break">
                                             <button type="button" class="settings__pomodoro-toggle" id="settings-pomodoro-break" data-duration="break" data-min="5" role="switch" aria-checked="true" aria-label="Standard 5 minutes">
                                                 <span class="settings__pomodoro-toggle-text">
@@ -155,7 +158,7 @@
                                             </button>
                                         </div>
                                         <div class="settings__duration-others" id="settings-break-others" aria-hidden="true">
-                                            <div class="settings__duration-cards" role="group" aria-label="Other break duration">
+                                            <div class="settings__duration-presets" role="group" aria-label="Other break duration">
                                                 <button type="button" class="settings__duration-card" data-duration="break" data-min="10" aria-pressed="false">
                                                     <span class="settings__duration-card-text">
                                                         <span class="settings__duration-card-desc">Recharge</span>
@@ -171,12 +174,13 @@
                                                     <span class="settings__duration-card-check" aria-hidden="true"></span>
                                                 </button>
                                             </div>
-                                            <div class="settings__custom-row" id="settings-custom-break-wrap">
-                                                <label for="settings-default-break" class="settings__custom-label">Custom</label>
-                                                <input type="number" id="settings-default-break" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom break duration in minutes">
-                                                <span class="settings__custom-suffix" aria-hidden="true">min</span>
-                                                <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
-                                            </div>
+                                        </div>
+                                        <div class="settings__custom-row" id="settings-custom-break-wrap">
+                                            <label for="settings-default-break" class="settings__custom-label">Custom</label>
+                                            <input type="number" id="settings-default-break" class="settings__duration-input" min="1" max="99" step="1" aria-label="Custom break duration in minutes">
+                                            <span class="settings__custom-suffix" aria-hidden="true">min</span>
+                                            <span class="settings__duration-card-check settings__duration-card-check--custom" aria-hidden="true"></span>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
